@@ -1887,13 +1887,16 @@ function renderFinance(){
   if(nec){nec.innerHTML=cats.filter(function(c){return c!=='All';}).map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('')+'<option value="__new__">＋ New Category…</option>';}
   var ct=document.getElementById('cat-tabs');
   if(ct){
-    ct.innerHTML=cats.map(function(c){
+    var tabHtml=cats.map(function(c){
       var isActive=c===activeCat;
       var bg=isActive?(c==='All'?'var(--purple)':CAT_COLORS[c]||'var(--muted)'):'transparent';
       var col=isActive?'#fff':(c==='All'?'var(--purple)':CAT_COLORS[c]||'var(--muted)');
       var border=c==='All'?'var(--purple)':CAT_COLORS[c]||'var(--muted)';
       return '<button onclick="setActiveCat(\''+c+'\')" style="padding:4px 12px;border-radius:100px;border:1.5px solid '+border+';background:'+bg+';color:'+col+';font-size:.7rem;font-weight:500;cursor:pointer;font-family:Inter,sans-serif">'+c+'</button>';
     }).join('');
+    // Add rename button
+    tabHtml+='<button onclick="openEditCategories()" style="padding:4px 11px;border-radius:100px;border:1.5px dashed var(--border);background:transparent;color:var(--muted);font-size:.7rem;font-weight:500;cursor:pointer;font-family:Inter,sans-serif;margin-left:4px">✎ Rename</button>';
+    ct.innerHTML=tabHtml;
   }
 
   // Expense table
@@ -1922,10 +1925,10 @@ function renderFinance(){
             '</div>'+
             (e.notes?'<div style="font-size:.68rem;color:var(--muted);margin-top:2px">'+e.notes+'</div>':'')+
           '</div>'+
-          '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center">'+
-            '<select onchange="editExpCat('+realIdx+',this.value)" title="Change category" style="font-size:.68rem;font-weight:600;padding:3px 8px;border-radius:100px;background:'+catBg+';color:'+catCol+';border:1.5px solid '+catCol+';cursor:pointer;font-family:Inter,sans-serif;outline:none;max-width:110px">'+
+          '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center;vertical-align:middle">'+
+            '<select onchange="editExpCat('+realIdx+',this.value)" title="Change category — click to reassign" style="font-size:.72rem;font-weight:600;padding:4px 6px;border-radius:8px;background:'+catBg+';color:'+catCol+';border:1.5px solid '+catCol+';cursor:pointer;font-family:Inter,sans-serif;outline:none;width:100%;max-width:120px">'+
               cats.filter(function(c){return c!=='All';}).map(function(c){return '<option value="'+c+'"'+(c===e.cat?' selected':'')+'>'+c+'</option>';}).join('')+
-              '<option value="__new__" style="color:var(--purple)">＋ New group…</option>'+
+              '<option value="__new__">＋ New group…</option>'+
             '</select>'+
           '</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center;font-size:.75rem;color:var(--muted)">'+e.freq+'</div>'+
@@ -2072,6 +2075,38 @@ window.renameCategory=function(oldCat,newCat){
   exps.forEach(function(e){if(e.cat===oldCat)e.cat=newCat;});
   saveActiveExpenses(exps);
   if(activeCat===oldCat)activeCat=newCat;
+  renderFinance();
+};
+
+window.openEditCategories=function(){
+  var exps=getActiveExpenses();
+  var cats=[];
+  exps.forEach(function(e){if(cats.indexOf(e.cat)<0)cats.push(e.cat);});
+  var body=cats.map(function(c,i){
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+      '<span style="width:10px;height:10px;border-radius:50%;background:'+(CAT_COLORS[c]||'var(--muted)')+';flex-shrink:0;display:inline-block"></span>'+
+      '<input class="modal-inp" id="cat-rename-'+i+'" value="'+c+'" data-old="'+c+'" style="margin-bottom:0;flex:1" placeholder="Category name">'+
+    '</div>';
+  }).join('')+
+  '<button onclick="applyRenames()" style="margin-top:6px;width:100%;padding:9px;border-radius:100px;border:none;background:var(--purple);color:#fff;font-family:Inter,sans-serif;font-size:.82rem;font-weight:600;cursor:pointer">Apply All Renames</button>';
+  openModal('✎ Rename Categories',body,null,{viewOnly:true,wide:false});
+};
+
+window.applyRenames=function(){
+  var exps=getActiveExpenses();
+  var inputs=document.querySelectorAll('[id^="cat-rename-"]');
+  var changed=false;
+  inputs.forEach(function(inp){
+    var oldCat=inp.dataset.old;
+    var newCat=inp.value.trim();
+    if(newCat&&newCat!==oldCat){
+      exps.forEach(function(e){if(e.cat===oldCat)e.cat=newCat;});
+      if(activeCat===oldCat)activeCat=newCat;
+      changed=true;
+    }
+  });
+  if(changed){saveActiveExpenses(exps);}
+  closeModal();
   renderFinance();
 };
 
