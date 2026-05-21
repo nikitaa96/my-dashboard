@@ -240,6 +240,45 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
 .hist-day-body{padding:10px 14px}
 .modal.wide{width:min(760px,95vw)}
 .modal.tall .modal-body-inner{max-height:65vh;overflow-y:auto}
+.cont-tab{padding:5px 13px;border-radius:var(--rp);border:1.5px solid var(--border);background:#fff;font-family:Inter,sans-serif;font-size:.73rem;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.cont-tab:hover{border-color:#c026d3;color:#c026d3;background:#fdf4ff}
+.cont-tab.active{background:#fdf4ff;border-color:#c026d3;color:#c026d3;font-weight:600}
+.cont-panel{display:none}.cont-panel.active{display:block}
+.idea-card{background:var(--bg);border-radius:var(--r);padding:11px 13px;margin-bottom:8px;border:1.5px solid transparent;transition:border-color .15s}
+.idea-card:hover{border-color:var(--border)}
+.idea-card-title{font-size:.83rem;font-weight:600;margin-bottom:3px}
+.idea-card-hook{font-size:.75rem;color:#c026d3;font-style:italic;margin-bottom:5px;line-height:1.4}
+.idea-card-meta{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:5px}
+.hook-card{background:var(--bg);border-radius:var(--r);padding:10px 13px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px}
+.hook-text{flex:1;font-size:.8rem;font-weight:500;line-height:1.4}
+.copy-hook-btn{font-size:.65rem;padding:3px 10px;border-radius:var(--rp);border:1.5px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;font-family:Inter,sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.copy-hook-btn:hover{border-color:#c026d3;color:#c026d3;background:#fdf4ff}
+.strat-card{background:var(--bg);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.strat-pillar{font-size:.88rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.strat-row{display:flex;justify-content:space-between;font-size:.75rem;padding:5px 0;border-bottom:1px solid var(--border)}
+.strat-row:last-child{border-bottom:none}
+.strat-lbl{color:var(--muted)}
+.strat-val{font-weight:500;text-align:right;max-width:60%}
+.cont-day-card{background:var(--bg);border-radius:var(--r);padding:11px 14px;margin-bottom:9px;border-left:3px solid var(--border)}
+.cont-day-card.status-filming{border-left-color:#ec4899}
+.cont-day-card.status-editing{border-left-color:#f97316}
+.cont-day-card.status-posted{border-left-color:#10b981}
+.cont-day-card.status-planned{border-left-color:#6c3cf7}
+.cont-day-name{font-size:.68rem;font-weight:700;color:#c026d3;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.cont-day-title{font-size:.84rem;font-weight:600;margin-bottom:3px}
+.cont-day-hook{font-size:.73rem;color:#c026d3;font-style:italic;margin-bottom:5px}
+.pipe-pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.pipe-col-hd{padding:7px 12px;border-radius:var(--rp);font-size:.7rem;font-weight:600;text-align:center;margin-bottom:8px}
+.pipe-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.pipe-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(192,38,211,.1)}
+.pipe-card-title{font-size:.78rem;font-weight:600;margin-bottom:4px;line-height:1.3}
+.pipe-card-meta{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hook-cat-hd{font-size:.78rem;font-weight:700;color:#c026d3;margin-bottom:7px;margin-top:14px;padding-bottom:4px;border-bottom:2px solid #fdf4ff}
+.hook-cat-hd:first-child{margin-top:0}
+.ctik{display:inline-block;padding:2px 8px;border-radius:var(--rp);font-size:.6rem;font-weight:600;background:#fdf4ff;color:#c026d3}
+.cpri-high{background:var(--rl);color:var(--red)}.cpri-medium{background:var(--yl);color:var(--yellow)}.cpri-low{background:var(--gl);color:var(--green)}
+.cstatus-planned{background:var(--pl);color:var(--purple)}.cstatus-filming{background:var(--pkl);color:var(--pink)}.cstatus-editing{background:var(--peachl);color:var(--peach)}.cstatus-posted{background:var(--gl);color:var(--green)}
+@media(max-width:768px){.pipe-pipe{grid-template-columns:1fr!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -253,6 +292,7 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
       <button class="nav-tab" id="nt-calendar" onclick="SV('calendar')">Calendar</button>
       <button class="nav-tab" id="nt-wellness" onclick="SV('wellness')">Wellness</button>
       <button class="nav-tab" id="nt-finance" onclick="SV('finance')">Finance</button>
+      <button class="nav-tab" id="nt-content" onclick="SV('content')">🎵 Content</button>
     </div>
   </div>
   <div style="text-align:right">
@@ -266,6 +306,7 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
   <button class="bnav-btn" id="bn-calendar" onclick="SVm('calendar')"><span class="bnav-icon">📅</span><span class="bnav-lbl">Calendar</span></button>
   <button class="bnav-btn" id="bn-wellness" onclick="SVm('wellness')"><span class="bnav-icon">🌿</span><span class="bnav-lbl">Wellness</span></button>
   <button class="bnav-btn" id="bn-finance" onclick="SVm('finance')"><span class="bnav-icon">💰</span><span class="bnav-lbl">Finance</span></button>
+  <button class="bnav-btn" id="bn-content" onclick="SVm('content')"><span class="bnav-icon">🎵</span><span class="bnav-lbl">Content</span></button>
 </nav>
 
 <!-- HOME -->
@@ -632,6 +673,61 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
 
 </div>
 
+<!-- CONTENT PLANNER (@thewellnessbae) -->
+<div class="view" id="view-content">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+      <div style="font-size:1.35rem;font-weight:700">@thewellnessbae <span style="color:#c026d3">✨</span></div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap" id="cont-tabs">
+        <button class="cont-tab active" onclick="showCont('week',this)">📅 Week Plan</button>
+        <button class="cont-tab" onclick="showCont('pipeline',this)">🎬 Pipeline</button>
+        <button class="cont-tab" onclick="showCont('ideas',this)">💡 Ideas Bank</button>
+        <button class="cont-tab" onclick="showCont('hooks',this)">🪝 Hooks</button>
+        <button class="cont-tab" onclick="showCont('strategy',this)">📊 Strategy</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:7px">
+      <button class="pill-btn" onclick="addContentIdea()">+ Idea</button>
+      <button class="pri-btn" style="background:linear-gradient(135deg,#c026d3,#7c3aed)" onclick="addPipelineItem()">+ Pipeline</button>
+    </div>
+  </div>
+  <!-- WEEK PLAN -->
+  <div class="cont-panel active" id="cont-week">
+    <div id="cont-week-grid"></div>
+  </div>
+  <!-- PIPELINE (Kanban) -->
+  <div class="cont-panel" id="cont-pipeline">
+    <div class="pipe-pipe" id="cont-pipe-grid"></div>
+  </div>
+  <!-- IDEAS BANK -->
+  <div class="cont-panel" id="cont-ideas">
+    <div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap" id="idea-filter-tabs">
+      <button class="cont-tab active" onclick="filterIdeas('All',this)">All</button>
+      <button class="cont-tab" onclick="filterIdeas('Morning Routine',this)">Morning Routine</button>
+      <button class="cont-tab" onclick="filterIdeas('Dubai Life',this)">Dubai Life</button>
+      <button class="cont-tab" onclick="filterIdeas('Wellness Tips',this)">Wellness Tips</button>
+      <button class="cont-tab" onclick="filterIdeas('Mental Health',this)">Mental Health</button>
+      <button class="cont-tab" onclick="filterIdeas('Fitness',this)">Fitness</button>
+      <button class="cont-tab" onclick="filterIdeas('GRWM',this)">GRWM</button>
+      <button class="cont-tab" onclick="filterIdeas('Reviews',this)">Reviews</button>
+    </div>
+    <div id="cont-ideas-list"></div>
+  </div>
+  <!-- HOOKS LIBRARY -->
+  <div class="cont-panel" id="cont-hooks">
+    <div style="margin-bottom:10px;font-size:.8rem;color:var(--muted)">Click <strong>Copy</strong> on any hook to grab it instantly for your next video 🎬</div>
+    <div id="cont-hooks-list"></div>
+  </div>
+  <!-- STRATEGY PILLARS -->
+  <div class="cont-panel" id="cont-strategy">
+    <div style="margin-bottom:14px">
+      <div style="font-size:.88rem;font-weight:600;margin-bottom:3px">Content Strategy · @thewellnessbae</div>
+      <div style="font-size:.75rem;color:var(--muted)">Your 6 content pillars — what to film, who it's for, and when to post.</div>
+    </div>
+    <div class="g2" id="cont-strat-grid"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <h3 id="modal-title">Add</h3>
@@ -674,7 +770,10 @@ async function initFromCloud(){
     gyms:load('v2_gyms',T.gyms),competitors:load('v2_comp',T.competitors),
     ideas:load('v2_ideas',T.ideas),expenses:load('v2_expenses',T.expenses),
     income:load('v2_income',T.income),savingsGoal:load('v2_savingsgoal',T.savingsGoal),
-    history:load('v2_hist',T.history),financeMonths:load('v2_fin_months',T.financeMonths)
+    history:load('v2_hist',T.history),financeMonths:load('v2_fin_months',T.financeMonths),
+    contentIdeas:load('v2_cont_ideas',T.contentIdeas),contentPipeline:load('v2_cont_pipe',T.contentPipeline),
+    contentWeek:load('v2_cont_week',T.contentWeek),contentHooks:load('v2_cont_hooks',T.contentHooks),
+    contentStrategy:load('v2_cont_strat',T.contentStrategy)
   });
   // Re-migrate if needed after cloud load
   if(!T.financeMonths)T.financeMonths={};
@@ -749,7 +848,13 @@ var T = {
   income: load('v2_income',32500),
   savingsGoal: load('v2_savingsgoal',120000),
   history: load('v2_hist',[]),
-  financeMonths: load('v2_fin_months',{})
+  financeMonths: load('v2_fin_months',{}),
+  contentIdeas: load('v2_cont_ideas',null),
+  contentPipeline: load('v2_cont_pipe',null),
+  contentWeek: load('v2_cont_week',null),
+  contentHooks: load('v2_cont_hooks',null),
+  contentStrategy: load('v2_cont_strat',null),
+  activeIdeaFilter: 'All'
 };
 
 // ── CLOCK ──────────────────────────────────
@@ -2069,6 +2174,300 @@ window.openAddTask=function(){
   );
 };
 
+// ── CONTENT PLANNER (@thewellnessbae) ──────────
+var DEFAULT_CONT_IDEAS=[
+  {id:1,title:'5am Morning in Dubai GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',cat:'Morning Routine',priority:'high',notes:'Show sunrise, skincare, healthy breakfast',inPipeline:false},
+  {id:2,title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',cat:'Wellness Tips',priority:'high',notes:'Energy, sleep, skin, mood changes',inPipeline:false},
+  {id:3,title:'What I Eat in a Day (Dubai Edition)',hook:'Healthy eating in Dubai actually looks like this',format:'Day in my life',cat:'Morning Routine',priority:'medium',notes:'Balanced and realistic — not restrictive',inPipeline:false},
+  {id:4,title:'Best Wellness Spots in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Gyms, spas, healthy cafes, parks',inPipeline:false},
+  {id:5,title:'My Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',cat:'Mental Health',priority:'high',notes:'Journaling, meditation, breathwork, movement',inPipeline:false},
+  {id:6,title:'30 Days of Pilates — What Happened',hook:'I did pilates every day for 30 days...',format:'Before/after',cat:'Fitness',priority:'medium',notes:'Film the process not just the result',inPipeline:false},
+  {id:7,title:'Viral Wellness Products — Honest Review',hook:'I tested every viral wellness product so you don\'t have to',format:'Product review',cat:'Reviews',priority:'medium',notes:'Honest — both good and bad',inPipeline:false},
+  {id:8,title:'How I Stay Fit Living in Dubai',hook:'Realistic fitness in Dubai without going crazy',format:'Routine',cat:'Fitness',priority:'medium',notes:'Gym, outdoor, home workout options',inPipeline:false},
+  {id:9,title:'Night Routine for Better Sleep',hook:'I haven\'t had a bad night\'s sleep since doing this',format:'Routine',cat:'Wellness Tips',priority:'high',notes:'No screens, magnesium, journaling, sleep mask',inPipeline:false},
+  {id:10,title:'Anxiety Tips That Actually Work',hook:'What no one tells you about managing anxiety',format:'Educational',cat:'Mental Health',priority:'high',notes:'Breathwork, grounding, movement, therapy',inPipeline:false},
+  {id:11,title:'GRWM for a Dubai Event ✨',hook:'Getting ready for a fancy Dubai event — come with me',format:'GRWM',cat:'GRWM',priority:'low',notes:'Glam look, outfit, confidence chat',inPipeline:false},
+  {id:12,title:'Healthiest Cafes in Dubai Ranked',hook:'Rating the healthiest cafes in Dubai 🥗',format:'Review',cat:'Reviews',priority:'medium',notes:'Vibe, taste, macro-friendly options, price',inPipeline:false},
+  {id:13,title:'Living in Dubai: Real Talk',hook:'What living in Dubai is actually like (honest)',format:'Talking head',cat:'Dubai Life',priority:'medium',notes:'Both pros and cons — relatable, not filtered',inPipeline:false},
+  {id:14,title:'My Daily Supplement Stack',hook:'The supplements that actually changed my health',format:'Educational',cat:'Wellness Tips',priority:'medium',notes:'Research-backed with proper disclaimers',inPipeline:false},
+  {id:15,title:'Journaling for Beginners',hook:'I\'ve journaled for 3 years — start here',format:'Educational',cat:'Mental Health',priority:'medium',notes:'Different methods + journaling prompts',inPipeline:false}
+];
+var DEFAULT_CONT_PIPE={
+  ideas:[
+    {id:1,title:'Dubai Wellness Spots',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Scout 3 locations first'},
+    {id:2,title:'How I Stay Fit in Dubai',hook:'Realistic fitness in Dubai without going crazy',format:'Routine',cat:'Fitness',priority:'medium',notes:'Plan filming locations'}
+  ],
+  scripting:[
+    {id:3,title:'5am Morning GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',cat:'Morning Routine',priority:'high',notes:'Write VO script, pick trending music'}
+  ],
+  filming:[
+    {id:4,title:'Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',cat:'Mental Health',priority:'high',notes:'Film tomorrow at 5:30am — golden light'}
+  ],
+  editing:[
+    {id:5,title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',cat:'Wellness Tips',priority:'high',notes:'Add captions + trending sound'}
+  ],
+  posted:[
+    {id:6,title:'Anxiety Tips That Actually Work',hook:'What no one tells you about managing anxiety',format:'Educational',cat:'Mental Health',priority:'high',notes:'Posted May 18 · 12.3k views 🎉'}
+  ]
+};
+var DEFAULT_CONT_WEEK=[
+  {day:'Monday',title:'5am Morning GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',status:'planned',notes:'Film at sunrise 5:15am'},
+  {day:'Tuesday',title:'Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',status:'filming',notes:'Have clips — need VO'},
+  {day:'Wednesday',title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',status:'editing',notes:'Check trending sounds'},
+  {day:'Thursday',title:'Rest Day — Stories & Engagement',hook:'',format:'Stories only',status:'planned',notes:'Q&A replies + behind the scenes'},
+  {day:'Friday',title:'Best Wellness Spots in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',status:'planned',notes:'Kite Beach + healthy cafe visit'},
+  {day:'Saturday',title:'Night Routine for Better Sleep',hook:"I haven't had a bad night's sleep since doing this",format:'Routine',status:'planned',notes:'Film tonight before bed'},
+  {day:'Sunday',title:'Weekly Reflection + Planning',hook:'',format:'Story series',status:'planned',notes:'Show your planning process — accountability'}
+];
+var DEFAULT_CONT_HOOKS=[
+  {cat:'POV',hooks:['POV: My 5am morning in Dubai 🌅','POV: You start taking your health seriously','POV: Your wellness era just started','POV: I moved to Dubai and found my healthiest self']},
+  {cat:'Transformation',hooks:['I did this every day for 30 days and...','I tried [thing] so you don\'t have to','Before I found this I was really struggling with...','My life completely changed when I started...']},
+  {cat:'Education',hooks:['What no one tells you about...','The truth about [wellness topic]','Stop doing this if you want to...','This is actually why you\'re always tired']},
+  {cat:'Review',hooks:['I tested the viral [product] — honest review','Is [product/place] actually worth it?','Rating every wellness trend I\'ve tried','Honest review after [time period]']},
+  {cat:'Relatable',hooks:['When you\'re trying to be healthy but...','Nobody talks about the hard part of wellness','Real life wellness (not what Instagram shows)','The unglamorous side of a healthy lifestyle']},
+  {cat:'Dubai Life',hooks:['Best kept wellness secrets in Dubai','Dubai wellness that\'s actually worth it','How I stay healthy living in Dubai','The wellness side of Dubai no one shows you']},
+  {cat:'Routine',hooks:['My exact morning routine (the real one)','Come with me: healthy day in Dubai','Everything I do to maintain my energy','My non-negotiable daily habits']}
+];
+var DEFAULT_CONT_STRAT=[
+  {pillar:'Morning Routines',emoji:'🌅',goal:'Be the go-to creator for morning wellness routines',emotion:'Inspiring & aspirational',cta:'Save this for tomorrow morning',freq:'2× per week',bestTime:'6–8am post'},
+  {pillar:'Dubai Wellness',emoji:'🌆',goal:'Own the Dubai wellness niche on TikTok',emotion:'Exclusive lifestyle',cta:'Follow for more Dubai wellness',freq:'1× per week',bestTime:'12pm post'},
+  {pillar:'Mental Health',emoji:'🧠',goal:'Normalise mental health conversations',emotion:'Vulnerable & real',cta:'Share if this resonates ❤️',freq:'1× per week',bestTime:'7–9pm post'},
+  {pillar:'Fitness & Movement',emoji:'💪',goal:'Show balanced, sustainable fitness',emotion:'Motivating but realistic',cta:'Try this with me this week',freq:'1× per week',bestTime:'6–8am post'},
+  {pillar:'Wellness Reviews',emoji:'⭐',goal:'Become a trusted, honest wellness reviewer',emotion:'Informative & trustworthy',cta:'Save for your next purchase',freq:'1× per week',bestTime:'12–3pm post'},
+  {pillar:'GRWM & Lifestyle',emoji:'✨',goal:'Show the full wellness lifestyle',emotion:'Fun & relatable',cta:'Come back tomorrow for more',freq:'1× per week',bestTime:'5–7pm post'}
+];
+
+function getContIdeas(){return T.contentIdeas&&T.contentIdeas.length?T.contentIdeas:DEFAULT_CONT_IDEAS;}
+function getContPipeline(){return T.contentPipeline&&Object.keys(T.contentPipeline).length?T.contentPipeline:DEFAULT_CONT_PIPE;}
+function getContWeek(){return T.contentWeek&&T.contentWeek.length?T.contentWeek:DEFAULT_CONT_WEEK;}
+function getContHooks(){return T.contentHooks&&T.contentHooks.length?T.contentHooks:DEFAULT_CONT_HOOKS;}
+function getContStrat(){return T.contentStrategy&&T.contentStrategy.length?T.contentStrategy:DEFAULT_CONT_STRAT;}
+
+window.showCont=function(panel,btn){
+  document.querySelectorAll('.cont-panel').forEach(function(e){e.classList.remove('active');});
+  document.getElementById('cont-tabs').querySelectorAll('.cont-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('cont-'+panel).classList.add('active');
+  btn.classList.add('active');
+};
+
+window.filterIdeas=function(cat,btn){
+  T.activeIdeaFilter=cat;
+  document.getElementById('idea-filter-tabs').querySelectorAll('.cont-tab').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderContentIdeas();
+};
+
+window.copyHook=function(text,btn){
+  if(navigator.clipboard){navigator.clipboard.writeText(text);}
+  btn.textContent='✓ Copied!';btn.style.borderColor='#c026d3';btn.style.color='#c026d3';
+  setTimeout(function(){btn.textContent='Copy';btn.style.borderColor='';btn.style.color='';},2000);
+};
+
+window.addContentIdea=function(){
+  openModal('Add Video Idea',
+    '<input class="modal-inp" id="m-ci-title" placeholder="Video title / concept">'+
+    '<input class="modal-inp" id="m-ci-hook" placeholder="Hook (your opening line)...">'+
+    '<select class="modal-inp" id="m-ci-cat">'+
+      '<option>Morning Routine</option><option>Dubai Life</option><option>Wellness Tips</option>'+
+      '<option>Mental Health</option><option>Fitness</option><option>GRWM</option><option>Reviews</option>'+
+    '</select>'+
+    '<select class="modal-inp" id="m-ci-fmt">'+
+      '<option>Talking head</option><option>GRWM</option><option>Routine walkthrough</option>'+
+      '<option>Educational</option><option>Day in my life</option><option>Location video</option>'+
+      '<option>Before/after</option><option>Product review</option><option>Stories only</option>'+
+    '</select>'+
+    '<select class="modal-inp" id="m-ci-pri">'+
+      '<option value="high">🔴 High Priority</option>'+
+      '<option value="medium" selected>🟡 Medium Priority</option>'+
+      '<option value="low">🟢 Low Priority</option>'+
+    '</select>'+
+    '<input class="modal-inp" id="m-ci-notes" placeholder="Filming notes, reminders...">',
+    function(){
+      var title=document.getElementById('m-ci-title').value.trim();if(!title)return;
+      var ideas=getContIdeas().slice();
+      ideas.unshift({id:Date.now(),title:title,hook:document.getElementById('m-ci-hook').value.trim(),
+        cat:document.getElementById('m-ci-cat').value,format:document.getElementById('m-ci-fmt').value,
+        priority:document.getElementById('m-ci-pri').value,notes:document.getElementById('m-ci-notes').value.trim(),inPipeline:false});
+      T.contentIdeas=ideas;save('v2_cont_ideas',T.contentIdeas);renderContentIdeas();
+    }
+  );
+};
+
+window.addPipelineItem=function(){
+  openModal('Add to Pipeline',
+    '<input class="modal-inp" id="m-pi-title" placeholder="Video title">'+
+    '<input class="modal-inp" id="m-pi-hook" placeholder="Hook (opening line)...">'+
+    '<select class="modal-inp" id="m-pi-stage">'+
+      '<option value="ideas">💡 Ideas</option>'+
+      '<option value="scripting">📝 Scripting</option>'+
+      '<option value="filming">🎬 Filming</option>'+
+      '<option value="editing">✂️ Editing</option>'+
+      '<option value="posted">✅ Posted</option>'+
+    '</select>'+
+    '<select class="modal-inp" id="m-pi-cat">'+
+      '<option>Morning Routine</option><option>Dubai Life</option><option>Wellness Tips</option>'+
+      '<option>Mental Health</option><option>Fitness</option><option>GRWM</option><option>Reviews</option>'+
+    '</select>'+
+    '<input class="modal-inp" id="m-pi-notes" placeholder="Notes...">',
+    function(){
+      var title=document.getElementById('m-pi-title').value.trim();if(!title)return;
+      var pipe=JSON.parse(JSON.stringify(getContPipeline()));
+      var stage=document.getElementById('m-pi-stage').value;
+      if(!pipe[stage])pipe[stage]=[];
+      pipe[stage].unshift({id:Date.now(),title:title,hook:document.getElementById('m-pi-hook').value.trim(),
+        cat:document.getElementById('m-pi-cat').value,priority:'medium',notes:document.getElementById('m-pi-notes').value.trim()});
+      T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
+    }
+  );
+};
+
+window.movePipeCard=function(id,fromStage,toStage){
+  var pipe=JSON.parse(JSON.stringify(getContPipeline()));
+  var card=null;
+  (pipe[fromStage]||[]).forEach(function(c,i){if(c.id===id){card=c;pipe[fromStage].splice(i,1);}});
+  if(!card)return;
+  if(!pipe[toStage])pipe[toStage]=[];
+  pipe[toStage].unshift(card);
+  T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
+};
+
+window.updateWeekStatus=function(idx,status){
+  var week=JSON.parse(JSON.stringify(getContWeek()));
+  week[idx].status=status;
+  T.contentWeek=week;save('v2_cont_week',T.contentWeek);renderContentWeek();
+};
+
+var PIPE_STAGES=[
+  {key:'ideas',label:'💡 Ideas',bg:'var(--yl)',fg:'var(--yellow)'},
+  {key:'scripting',label:'📝 Scripting',bg:'var(--bl)',fg:'var(--blue)'},
+  {key:'filming',label:'🎬 Filming',bg:'var(--pkl)',fg:'var(--pink)'},
+  {key:'editing',label:'✂️ Editing',bg:'var(--peachl)',fg:'var(--peach)'},
+  {key:'posted',label:'✅ Posted',bg:'var(--gl)',fg:'var(--green)'}
+];
+
+function renderContentWeek(){
+  var el=document.getElementById('cont-week-grid');if(!el)return;
+  var week=getContWeek();
+  var stageLabel={planned:'📋 Planned',filming:'🎬 Filming',editing:'✂️ Editing',posted:'✅ Posted'};
+  var stageOpts=['planned','filming','editing','posted'];
+  var html='';
+  week.forEach(function(d,i){
+    html+='<div class="cont-day-card status-'+d.status+'">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
+        '<div style="flex:1">'+
+          '<div class="cont-day-name">'+d.day+'</div>'+
+          '<div class="cont-day-title">'+d.title+'</div>'+
+          (d.hook?'<div class="cont-day-hook">“'+d.hook+'”</div>':'')+
+          (d.format?'<span class="ctik">'+d.format+'</span>':'')+
+          (d.notes?'<div style="font-size:.7rem;color:var(--muted);margin-top:5px">📌 '+d.notes+'</div>':'')+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">'+
+          '<span style="font-size:.65rem;font-weight:600;padding:2px 9px;border-radius:100px;white-space:nowrap" class="cstatus-'+d.status+'">'+stageLabel[d.status]+'</span>'+
+          '<select style="font-size:.63rem;border:1px solid var(--border);border-radius:var(--rp);padding:2px 5px;color:var(--muted);cursor:pointer;background:#fff" onchange="updateWeekStatus('+i+',this.value)">'+
+          stageOpts.map(function(s){return '<option value="'+s+'"'+(d.status===s?' selected':'')+'>'+stageLabel[s]+'</option>';}).join('')+
+          '</select>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+  el.innerHTML=html||'<div class="empty">No week plan yet.</div>';
+}
+
+function renderContentPipeline(){
+  var el=document.getElementById('cont-pipe-grid');if(!el)return;
+  var pipe=getContPipeline();
+  var nextStage={ideas:'scripting',scripting:'filming',filming:'editing',editing:'posted'};
+  var html='';
+  PIPE_STAGES.forEach(function(stage){
+    var cards=pipe[stage.key]||[];
+    html+='<div>'+
+      '<div class="pipe-col-hd" style="background:'+stage.bg+';color:'+stage.fg+'">'+
+        stage.label+' <span style="font-size:.65rem;font-weight:400;opacity:.8">('+cards.length+')</span>'+
+      '</div>';
+    cards.forEach(function(c){
+      html+='<div class="pipe-card">'+
+        '<div class="pipe-card-title">'+c.title+'</div>'+
+        (c.hook?'<div style="font-size:.7rem;color:#c026d3;font-style:italic;margin-bottom:5px;line-height:1.3">“'+c.hook+'”</div>':'')+
+        '<div class="pipe-card-meta">'+
+          '<span class="ctik">'+c.cat+'</span>'+
+          (nextStage[stage.key]?
+            '<button onclick="movePipeCard('+c.id+',\''+stage.key+'\',\''+nextStage[stage.key]+'\')" style="font-size:.6rem;padding:2px 8px;border-radius:100px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;margin-left:auto;transition:all .15s" onmouseover="this.style.borderColor=\'#c026d3\';this.style.color=\'#c026d3\'" onmouseout="this.style.borderColor=\'\';this.style.color=\'\'">→ Next</button>':
+            '<span style="font-size:.63rem;color:var(--green);margin-left:auto;font-weight:600">Live ✓</span>')+
+        '</div>'+
+        (c.notes?'<div style="font-size:.67rem;color:var(--muted);margin-top:4px">'+c.notes+'</div>':'')+
+      '</div>';
+    });
+    if(!cards.length)html+='<div style="font-size:.75rem;color:var(--muted);font-style:italic;text-align:center;padding:14px 0;border:1.5px dashed var(--border);border-radius:var(--r)">Empty</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderContentIdeas(){
+  var el=document.getElementById('cont-ideas-list');if(!el)return;
+  var ideas=getContIdeas();
+  var filter=T.activeIdeaFilter||'All';
+  var filtered=filter==='All'?ideas:ideas.filter(function(i){return i.cat===filter;});
+  if(!filtered.length){el.innerHTML='<div class="empty">No ideas in this category yet. Click + Idea to add one.</div>';return;}
+  var html='<div class="g3">';
+  filtered.forEach(function(idea){
+    html+='<div class="idea-card">'+
+      '<div class="idea-card-title">'+idea.title+'</div>'+
+      (idea.hook?'<div class="idea-card-hook">“'+idea.hook+'”</div>':'')+
+      '<div style="font-size:.7rem;color:var(--muted);margin-bottom:5px">'+idea.format+'</div>'+
+      (idea.notes?'<div style="font-size:.7rem;color:var(--muted);line-height:1.5;margin-bottom:6px">📌 '+idea.notes+'</div>':'')+
+      '<div class="idea-card-meta">'+
+        '<span class="ctik">'+idea.cat+'</span>'+
+        '<span class="cpri-'+idea.priority+'" style="font-size:.6rem;font-weight:600;padding:2px 7px;border-radius:100px">'+idea.priority+'</span>'+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function renderContentHooks(){
+  var el=document.getElementById('cont-hooks-list');if(!el)return;
+  var hooks=getContHooks();
+  var html='';
+  hooks.forEach(function(group){
+    html+='<div class="hook-cat-hd">'+group.cat+'</div>';
+    group.hooks.forEach(function(h){
+      var safe=h.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      html+='<div class="hook-card">'+
+        '<div class="hook-text">“'+h+'”</div>'+
+        '<button class="copy-hook-btn" onclick="copyHook(\''+safe+'\',this)">Copy</button>'+
+      '</div>';
+    });
+  });
+  el.innerHTML=html||'<div class="empty">No hooks yet.</div>';
+}
+
+function renderContentStrategy(){
+  var el=document.getElementById('cont-strat-grid');if(!el)return;
+  var strat=getContStrat();
+  var html='';
+  strat.forEach(function(s){
+    html+='<div class="strat-card">'+
+      '<div class="strat-pillar"><span style="font-size:1.3rem">'+s.emoji+'</span>'+s.pillar+'</div>'+
+      '<div class="strat-row"><span class="strat-lbl">Goal</span><span class="strat-val">'+s.goal+'</span></div>'+
+      '<div class="strat-row"><span class="strat-lbl">Emotion / Tone</span><span class="strat-val">'+s.emotion+'</span></div>'+
+      '<div class="strat-row"><span class="strat-lbl">CTA</span><span class="strat-val" style="color:#c026d3;font-style:italic">'+s.cta+'</span></div>'+
+      '<div class="strat-row"><span class="strat-lbl">Frequency</span><span class="strat-val">'+s.freq+'</span></div>'+
+      '<div class="strat-row"><span class="strat-lbl">Best time to post</span><span class="strat-val">'+s.bestTime+'</span></div>'+
+    '</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderContent(){
+  renderContentWeek();
+  renderContentPipeline();
+  renderContentIdeas();
+  renderContentHooks();
+  renderContentStrategy();
+}
+
 // ── RENDER ALL ──────────────────────────────
 function renderAll(){
   renderTodos();
@@ -2089,6 +2488,7 @@ function renderAll(){
   renderPodQueue();
   initNotes();
   renderAthlo();
+  renderContent();
 }
 
 renderAll();
