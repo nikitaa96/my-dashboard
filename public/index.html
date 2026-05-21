@@ -1923,9 +1923,9 @@ function renderFinance(){
             (e.notes?'<div style="font-size:.68rem;color:var(--muted);margin-top:2px">'+e.notes+'</div>':'')+
           '</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center">'+
-            '<select onchange="editExpCat('+realIdx+',this.value)" style="font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:100px;background:'+catBg+';color:'+catCol+';border:1px solid transparent;cursor:pointer;font-family:Inter,sans-serif;-webkit-appearance:none;text-align:center;max-width:90px">'+
+            '<select onchange="editExpCat('+realIdx+',this.value)" title="Change category" style="font-size:.68rem;font-weight:600;padding:3px 8px;border-radius:100px;background:'+catBg+';color:'+catCol+';border:1.5px solid '+catCol+';cursor:pointer;font-family:Inter,sans-serif;outline:none;max-width:110px">'+
               cats.filter(function(c){return c!=='All';}).map(function(c){return '<option value="'+c+'"'+(c===e.cat?' selected':'')+'>'+c+'</option>';}).join('')+
-              '<option value="__new__">＋ New…</option>'+
+              '<option value="__new__" style="color:var(--purple)">＋ New group…</option>'+
             '</select>'+
           '</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center;font-size:.75rem;color:var(--muted)">'+e.freq+'</div>'+
@@ -2000,7 +2000,8 @@ function renderFinance(){
       var bg=CAT_BG[cat]||'var(--bg)';
       return '<div style="margin-bottom:16px">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:10px;background:'+bg+';margin-bottom:6px">'+
-          '<span contenteditable="true" data-cat="'+cat+'" onblur="renameCategory(this.dataset.cat,this.textContent.trim())" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="Click to rename category" style="font-size:.82rem;font-weight:700;color:'+col+';outline:none;border-bottom:1px dashed transparent;cursor:text;min-width:30px" onfocus="this.style.borderBottomColor=\''+col+'\'" onblurfocus="this.style.borderBottomColor=\'transparent\'">'+cat+'</span>'+
+          '<span contenteditable="true" data-cat="'+cat+'" onblur="renameCategory(this.dataset.cat,this.textContent.trim())" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="Click to rename this category" style="font-size:.82rem;font-weight:700;color:'+col+';outline:none;border-bottom:1.5px dashed '+col+';cursor:text;min-width:30px;opacity:.9" onfocus="this.style.opacity=\'1\'">'+cat+'</span>'+
+          '<span style="font-size:.63rem;color:'+col+';opacity:.6;margin-left:5px">✎ rename</span>'+
           '<span style="font-size:.82rem;font-weight:700;color:'+col+'">'+Math.round(catTotal).toLocaleString()+' AED / mo</span>'+
         '</div>'+
         '<div style="padding-left:12px">'+
