@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="My Day">
+<meta name="apple-mobile-web-app-title" content="My Dashboard">
 <meta name="theme-color" content="#6c3cf7">
-<title>My Day</title>
+<title>My Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f0f0f8;--white:#fff;--text:#1a1a2e;--muted:#8888aa;--border:#e8e8f0;--purple:#6c3cf7;--pl:#ede9fe;--blue:#3b82f6;--bl:#eff6ff;--pink:#ec4899;--pkl:#fdf2f8;--green:#10b981;--gl:#ecfdf5;--yellow:#f59e0b;--yl:#fffbeb;--red:#ef4444;--rl:#fef2f2;--peach:#f97316;--peachl:#fff7ed;--r:16px;--rp:100px;--sh:0 2px 12px rgba(108,60,247,.07)}
@@ -278,14 +278,14 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
 .ctik{display:inline-block;padding:2px 8px;border-radius:var(--rp);font-size:.6rem;font-weight:600;background:#fdf4ff;color:#c026d3}
 .cpri-high{background:var(--rl);color:var(--red)}.cpri-medium{background:var(--yl);color:var(--yellow)}.cpri-low{background:var(--gl);color:var(--green)}
 .cstatus-planned{background:var(--pl);color:var(--purple)}.cstatus-filming{background:var(--pkl);color:var(--pink)}.cstatus-editing{background:var(--peachl);color:var(--peach)}.cstatus-posted{background:var(--gl);color:var(--green)}
-@media(max-width:768px){.pipe-pipe{grid-template-columns:1fr!important}}
+@media(max-width:768px){.pipe-pipe{grid-template-columns:1fr!important}#cal-main-grid{grid-template-columns:1fr!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 <div class="topbar">
   <div style="display:flex;align-items:center">
-    <div class="logo"><div class="logo-icon">✦</div> My Day</div>
+    <div class="logo"><div class="logo-icon">✦</div> My Dashboard</div>
     <div class="nav-tabs">
       <button class="nav-tab active" id="nt-home" onclick="SV('home')">Home</button>
       <button class="nav-tab" id="nt-work" onclick="SV('work')">Work</button>
@@ -320,7 +320,7 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
         <span style="font-size:.8rem;color:var(--muted)"><strong id="s-events" style="color:var(--yellow)">0</strong> events</span>
       </div>
       <div style="display:flex;gap:7px;margin-top:11px">
-        <button class="new-day-btn" onclick="newDay()">🌅 New Day</button>
+        <button class="new-day-btn" id="new-day-btn" onclick="newDay()">🌅 New Day</button>
         <button class="hist-btn" onclick="showHistory()">📅 History</button>
       </div>
     </div>
@@ -512,22 +512,28 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
 
 <!-- CALENDAR -->
 <div class="view" id="view-calendar">
-  <div class="g2">
+  <div style="display:grid;grid-template-columns:300px 1fr;gap:14px;align-items:start" id="cal-main-grid">
     <div class="col">
       <div class="card">
-        <div class="card-hd"><button class="ghost-btn" onclick="chgMonth(-1)">‹ Prev</button><h3 id="cal-lbl" style="text-align:center;flex:1"></h3><button class="ghost-btn" onclick="chgMonth(1)">Next ›</button></div>
+        <div class="card-hd"><button class="ghost-btn" onclick="chgMonth(-1)">‹</button><h3 id="cal-lbl" style="text-align:center;flex:1;font-size:.82rem"></h3><button class="ghost-btn" onclick="chgMonth(1)">›</button></div>
         <div class="card-body"><div class="cal-grid" id="cal-hds"></div><div class="cal-grid" id="cal-grid"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><h3>Events · Today</h3><button class="pill-btn" onclick="addEvent()">+ Add</button></div>
+        <div class="card-body" id="event-list"></div>
       </div>
       <div class="card">
         <div class="card-hd"><h3>Monthly Goals 🎯</h3><button class="pill-btn" onclick="addGoal()">+ Add</button></div>
         <div class="card-body" id="goals-list"></div>
       </div>
     </div>
-    <div class="col">
-      <div class="card">
-        <div class="card-hd"><h3>Events · Today</h3><button class="pill-btn" onclick="addEvent()">+ Add</button></div>
-        <div class="card-body" id="event-list"></div>
+    <div class="card" style="overflow:hidden;padding:0">
+      <div style="padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px">
+        <div style="font-size:.9rem;font-weight:600">📅 Google Calendar</div>
+        <span style="font-size:.72rem;color:var(--muted)">nik.manduca@athlo.app</span>
+        <a href="https://calendar.google.com" target="_blank" style="margin-left:auto;font-size:.7rem;color:var(--blue);font-weight:500;text-decoration:none;padding:3px 10px;border:1px solid var(--blue);border-radius:100px">Open full ↗</a>
       </div>
+      <iframe src="https://calendar.google.com/calendar/embed?src=nik.manduca%40athlo.app&ctz=Asia%2FDubai&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=0&showTz=0&mode=WEEK" style="width:100%;height:640px;border:none" frameborder="0" scrolling="no" loading="lazy"></iframe>
     </div>
   </div>
 </div>
@@ -868,6 +874,8 @@ function tick(){
   if(de) de.textContent=DAYS[n.getDay()]+', '+MONTHS[n.getMonth()]+' '+n.getDate();
   var ge=document.getElementById('grt-time');
   if(ge) ge.textContent=h<12?'morning':h<17?'afternoon':'evening';
+  var nb=document.getElementById('new-day-btn');
+  if(nb) nb.textContent='🌅 '+MONTHS[n.getMonth()].slice(0,3)+' '+n.getDate();
 }
 setInterval(tick,1000);tick();
 
@@ -1874,6 +1882,9 @@ function renderFinance(){
   var activeExps=getActiveExpenses();
   var cats=['All'];
   activeExps.forEach(function(e){if(cats.indexOf(e.cat)<0)cats.push(e.cat);});
+  // Sync the "Add expense" category select to current cats
+  var nec=document.getElementById('new-exp-cat');
+  if(nec){nec.innerHTML=cats.filter(function(c){return c!=='All';}).map(function(c){return '<option value="'+c+'">'+c+'</option>';}).join('')+'<option value="__new__">＋ New Category…</option>';}
   var ct=document.getElementById('cat-tabs');
   if(ct){
     ct.innerHTML=cats.map(function(c){
@@ -1912,7 +1923,10 @@ function renderFinance(){
             (e.notes?'<div style="font-size:.68rem;color:var(--muted);margin-top:2px">'+e.notes+'</div>':'')+
           '</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center">'+
-            '<span style="font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:100px;background:'+catBg+';color:'+catCol+'">'+e.cat+'</span>'+
+            '<select onchange="editExpCat('+realIdx+',this.value)" style="font-size:.65rem;font-weight:600;padding:2px 7px;border-radius:100px;background:'+catBg+';color:'+catCol+';border:1px solid transparent;cursor:pointer;font-family:Inter,sans-serif;-webkit-appearance:none;text-align:center;max-width:90px">'+
+              cats.filter(function(c){return c!=='All';}).map(function(c){return '<option value="'+c+'"'+(c===e.cat?' selected':'')+'>'+c+'</option>';}).join('')+
+              '<option value="__new__">＋ New…</option>'+
+            '</select>'+
           '</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:center;font-size:.75rem;color:var(--muted)">'+e.freq+'</div>'+
           '<div style="padding:8px 10px;border-top:1px solid var(--border);background:'+rowBg+';text-align:right">'+
@@ -1986,7 +2000,7 @@ function renderFinance(){
       var bg=CAT_BG[cat]||'var(--bg)';
       return '<div style="margin-bottom:16px">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:10px;background:'+bg+';margin-bottom:6px">'+
-          '<span style="font-size:.82rem;font-weight:700;color:'+col+'">'+cat+'</span>'+
+          '<span contenteditable="true" data-cat="'+cat+'" onblur="renameCategory(this.dataset.cat,this.textContent.trim())" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" title="Click to rename category" style="font-size:.82rem;font-weight:700;color:'+col+';outline:none;border-bottom:1px dashed transparent;cursor:text;min-width:30px" onfocus="this.style.borderBottomColor=\''+col+'\'" onblurfocus="this.style.borderBottomColor=\'transparent\'">'+cat+'</span>'+
           '<span style="font-size:.82rem;font-weight:700;color:'+col+'">'+Math.round(catTotal).toLocaleString()+' AED / mo</span>'+
         '</div>'+
         '<div style="padding-left:12px">'+
@@ -2021,6 +2035,11 @@ window.saveNewExpense=function(){
   var amt=parseFloat(document.getElementById('new-exp-amt').value)||0;
   var cat=document.getElementById('new-exp-cat').value;
   var freq=document.getElementById('new-exp-freq').value;
+  if(cat==='__new__'){
+    var nc=prompt('New category name:');
+    if(!nc||!nc.trim())return;
+    cat=nc.trim();
+  }
   if(!name)return;
   var exps=getActiveExpenses();
   exps.push({id:Date.now(),name:name,amount:amt,cat:cat,freq:freq,notes:''});
@@ -2034,6 +2053,25 @@ window.saveNewExpense=function(){
 window.editExpName=function(i,val){
   var exps=getActiveExpenses();
   if(exps[i]){exps[i].name=val.trim();saveActiveExpenses(exps);renderFinance();}
+};
+
+window.editExpCat=function(i,newCat){
+  if(newCat==='__new__'){
+    var name=prompt('New category name:');
+    if(!name||!name.trim()){renderFinance();return;}
+    newCat=name.trim();
+  }
+  var exps=getActiveExpenses();
+  if(exps[i]){exps[i].cat=newCat;saveActiveExpenses(exps);renderFinance();}
+};
+
+window.renameCategory=function(oldCat,newCat){
+  if(!newCat||newCat===oldCat)return;
+  var exps=getActiveExpenses();
+  exps.forEach(function(e){if(e.cat===oldCat)e.cat=newCat;});
+  saveActiveExpenses(exps);
+  if(activeCat===oldCat)activeCat=newCat;
+  renderFinance();
 };
 
 window.editExpAmt=function(i,val){
@@ -2077,13 +2115,12 @@ function parseCSVToExpenses(text){
   var lines=text.split('\n').filter(function(l){return l.trim();});
   if(lines.length<2)return [];
   var newExps=[];
-  var validCats=['Housing','Transport','Food','Beauty','Subscriptions','Health','Other'];
   for(var i=1;i<lines.length;i++){
     var cols=lines[i].split(',').map(function(c){return c.trim().replace(/^"|"$/g,'');});
     if(cols.length<2)continue;
     var name=cols[0]||'Imported expense';
     var cat=cols[1]||'Other';
-    if(validCats.indexOf(cat)<0)cat='Other';
+    if(!cat)cat='Other';
     var freq=cols[2]||'monthly';
     var amt=parseFloat(cols[3])||0;
     var notes=cols[6]||'';
