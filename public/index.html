@@ -707,16 +707,7 @@ body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;font-si
   </div>
   <!-- IDEAS BANK -->
   <div class="cont-panel" id="cont-ideas">
-    <div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap" id="idea-filter-tabs">
-      <button class="cont-tab active" onclick="filterIdeas('All',this)">All</button>
-      <button class="cont-tab" onclick="filterIdeas('Morning Routine',this)">Morning Routine</button>
-      <button class="cont-tab" onclick="filterIdeas('Dubai Life',this)">Dubai Life</button>
-      <button class="cont-tab" onclick="filterIdeas('Wellness Tips',this)">Wellness Tips</button>
-      <button class="cont-tab" onclick="filterIdeas('Mental Health',this)">Mental Health</button>
-      <button class="cont-tab" onclick="filterIdeas('Fitness',this)">Fitness</button>
-      <button class="cont-tab" onclick="filterIdeas('GRWM',this)">GRWM</button>
-      <button class="cont-tab" onclick="filterIdeas('Reviews',this)">Reviews</button>
-    </div>
+    <div style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap" id="idea-filter-tabs"></div>
     <div id="cont-ideas-list"></div>
   </div>
   <!-- HOOKS LIBRARY -->
@@ -2248,33 +2239,44 @@ window.openAddTask=function(){
 };
 
 // ── CONTENT PLANNER (@thewellnessbae) ──────────
+var CONT_CATS=['Dubai Life','Cycle Syncing','Nutrition','Wellness Experiences','Wellness Tips','Mental Health','Fitness'];
+var CONT_FMTS=['Talking head','Tutorial','Routine walkthrough','Educational','Day in my life','Location video','Before/after','Experience','Challenge','Stories only'];
+var CONT_DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+// Migration: clear old category data so new defaults load
+(function(){
+  var old=['GRWM','Reviews','Morning Routine'];
+  var ideas=T.contentIdeas;
+  if(ideas&&ideas.length&&ideas.some(function(x){return old.indexOf(x.cat)>=0;})){
+    T.contentIdeas=null;T.contentPipeline=null;T.contentWeek=null;T.contentHooks=null;T.contentStrategy=null;
+    save('v2_cont_ideas',null);save('v2_cont_pipe',null);save('v2_cont_week',null);save('v2_cont_hooks',null);save('v2_cont_strat',null);
+  }
+})();
 var DEFAULT_CONT_IDEAS=[
-  {id:1,title:'5am Morning in Dubai GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',cat:'Morning Routine',priority:'high',notes:'Show sunrise, skincare, healthy breakfast',inPipeline:false},
-  {id:2,title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',cat:'Wellness Tips',priority:'high',notes:'Energy, sleep, skin, mood changes',inPipeline:false},
-  {id:3,title:'What I Eat in a Day (Dubai Edition)',hook:'Healthy eating in Dubai actually looks like this',format:'Day in my life',cat:'Morning Routine',priority:'medium',notes:'Balanced and realistic — not restrictive',inPipeline:false},
-  {id:4,title:'Best Wellness Spots in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Gyms, spas, healthy cafes, parks',inPipeline:false},
-  {id:5,title:'My Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',cat:'Mental Health',priority:'high',notes:'Journaling, meditation, breathwork, movement',inPipeline:false},
-  {id:6,title:'30 Days of Pilates — What Happened',hook:'I did pilates every day for 30 days...',format:'Before/after',cat:'Fitness',priority:'medium',notes:'Film the process not just the result',inPipeline:false},
-  {id:7,title:'Viral Wellness Products — Honest Review',hook:'I tested every viral wellness product so you don\'t have to',format:'Product review',cat:'Reviews',priority:'medium',notes:'Honest — both good and bad',inPipeline:false},
-  {id:8,title:'How I Stay Fit Living in Dubai',hook:'Realistic fitness in Dubai without going crazy',format:'Routine',cat:'Fitness',priority:'medium',notes:'Gym, outdoor, home workout options',inPipeline:false},
-  {id:9,title:'Night Routine for Better Sleep',hook:'I haven\'t had a bad night\'s sleep since doing this',format:'Routine',cat:'Wellness Tips',priority:'high',notes:'No screens, magnesium, journaling, sleep mask',inPipeline:false},
-  {id:10,title:'Anxiety Tips That Actually Work',hook:'What no one tells you about managing anxiety',format:'Educational',cat:'Mental Health',priority:'high',notes:'Breathwork, grounding, movement, therapy',inPipeline:false},
-  {id:11,title:'GRWM for a Dubai Event ✨',hook:'Getting ready for a fancy Dubai event — come with me',format:'GRWM',cat:'GRWM',priority:'low',notes:'Glam look, outfit, confidence chat',inPipeline:false},
-  {id:12,title:'Healthiest Cafes in Dubai Ranked',hook:'Rating the healthiest cafes in Dubai 🥗',format:'Review',cat:'Reviews',priority:'medium',notes:'Vibe, taste, macro-friendly options, price',inPipeline:false},
-  {id:13,title:'Living in Dubai: Real Talk',hook:'What living in Dubai is actually like (honest)',format:'Talking head',cat:'Dubai Life',priority:'medium',notes:'Both pros and cons — relatable, not filtered',inPipeline:false},
-  {id:14,title:'My Daily Supplement Stack',hook:'The supplements that actually changed my health',format:'Educational',cat:'Wellness Tips',priority:'medium',notes:'Research-backed with proper disclaimers',inPipeline:false},
-  {id:15,title:'Journaling for Beginners',hook:'I\'ve journaled for 3 years — start here',format:'Educational',cat:'Mental Health',priority:'medium',notes:'Different methods + journaling prompts',inPipeline:false}
+  {id:1,title:'Hidden Wellness Gems in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Gyms, spas, healthy cafes — scout 3 locations',inPipeline:false},
+  {id:2,title:'Living in Dubai: Real Talk',hook:'What living in Dubai is actually like (honest)',format:'Talking head',cat:'Dubai Life',priority:'medium',notes:'Pros and cons — relatable, not filtered',inPipeline:false},
+  {id:3,title:'How I Eat & Train for My Cycle Phase',hook:'I started eating for my cycle and everything changed',format:'Educational',cat:'Cycle Syncing',priority:'high',notes:'Cover all 4 phases simply — high save potential',inPipeline:false},
+  {id:4,title:'Cycle Syncing 101',hook:'What no one tells you about syncing your life to your cycle',format:'Talking head',cat:'Cycle Syncing',priority:'high',notes:'Great for new followers — high save potential',inPipeline:false},
+  {id:5,title:'What I Eat in a Day (Follicular Phase)',hook:'Eating for my cycle this week looks like this',format:'Day in my life',cat:'Nutrition',priority:'medium',notes:'Keep it realistic and budget-friendly',inPipeline:false},
+  {id:6,title:'My Anti-Inflammatory Meal Prep',hook:'I meal prep this every week and my inflammation went down',format:'Tutorial',cat:'Nutrition',priority:'high',notes:'Film in kitchen — colourful and aesthetic',inPipeline:false},
+  {id:7,title:'I Tried Sound Healing in Dubai',hook:'I tried sound healing for the first time and...',format:'Experience',cat:'Wellness Experiences',priority:'high',notes:'Film at the studio if allowed',inPipeline:false},
+  {id:8,title:'Cold Plunge at 5am — Worth It?',hook:'I woke up at 5am for a cold plunge for 7 days',format:'Challenge',cat:'Wellness Experiences',priority:'medium',notes:'Show real reactions — not just highlights',inPipeline:false},
+  {id:9,title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',cat:'Wellness Tips',priority:'high',notes:'Energy, sleep, skin, mood changes',inPipeline:false},
+  {id:10,title:'My Daily Supplement Stack',hook:'The supplements that actually changed my health',format:'Educational',cat:'Wellness Tips',priority:'medium',notes:'Research-backed with proper disclaimers',inPipeline:false},
+  {id:11,title:'Anxiety Tips That Actually Work',hook:'What no one tells you about managing anxiety',format:'Educational',cat:'Mental Health',priority:'high',notes:'Breathwork, grounding, movement, therapy',inPipeline:false},
+  {id:12,title:'Journaling for Beginners',hook:"I've journaled for 3 years — start here",format:'Educational',cat:'Mental Health',priority:'medium',notes:'Different methods + journaling prompts',inPipeline:false},
+  {id:13,title:'30 Days of Pilates — What Happened',hook:'I did pilates every day for 30 days...',format:'Before/after',cat:'Fitness',priority:'medium',notes:'Film the process not just the result',inPipeline:false},
+  {id:14,title:'How I Stay Fit Living in Dubai',hook:'Realistic fitness in Dubai without going crazy',format:'Routine walkthrough',cat:'Fitness',priority:'medium',notes:'Gym, outdoor, home workout options',inPipeline:false}
 ];
 var DEFAULT_CONT_PIPE={
   ideas:[
-    {id:1,title:'Dubai Wellness Spots',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Scout 3 locations first'},
-    {id:2,title:'How I Stay Fit in Dubai',hook:'Realistic fitness in Dubai without going crazy',format:'Routine',cat:'Fitness',priority:'medium',notes:'Plan filming locations'}
+    {id:1,title:'Hidden Wellness Gems in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',cat:'Dubai Life',priority:'high',notes:'Scout 3 locations first'},
+    {id:2,title:'Cycle Syncing 101',hook:'What no one tells you about syncing your cycle',format:'Talking head',cat:'Cycle Syncing',priority:'high',notes:'Research + outline first'}
   ],
   scripting:[
-    {id:3,title:'5am Morning GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',cat:'Morning Routine',priority:'high',notes:'Write VO script, pick trending music'}
+    {id:3,title:'Anti-Inflammatory Meal Prep',hook:'I meal prep this every week and my inflammation went down',format:'Tutorial',cat:'Nutrition',priority:'high',notes:'Write VO, pick music'}
   ],
   filming:[
-    {id:4,title:'Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',cat:'Mental Health',priority:'high',notes:'Film tomorrow at 5:30am — golden light'}
+    {id:4,title:'Sound Healing in Dubai',hook:'I tried sound healing for the first time and...',format:'Experience',cat:'Wellness Experiences',priority:'high',notes:'Book studio slot — film b-roll'}
   ],
   editing:[
     {id:5,title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',cat:'Wellness Tips',priority:'high',notes:'Add captions + trending sound'}
@@ -2284,34 +2286,35 @@ var DEFAULT_CONT_PIPE={
   ]
 };
 var DEFAULT_CONT_WEEK=[
-  {day:'Monday',title:'5am Morning GRWM',hook:'POV: My 5am morning in Dubai 🌅',format:'GRWM',status:'planned',notes:'Film at sunrise 5:15am'},
-  {day:'Tuesday',title:'Mental Health Morning Stack',hook:'This morning routine saved my mental health',format:'Routine walkthrough',status:'filming',notes:'Have clips — need VO'},
+  {day:'Monday',title:'Cycle Syncing 101',hook:'What no one tells you about syncing your life to your cycle',format:'Talking head',status:'planned',notes:'Film in morning — good natural light'},
+  {day:'Tuesday',title:'Anti-Inflammatory Meal Prep',hook:'I meal prep this every week and my inflammation went down',format:'Tutorial',status:'filming',notes:'Kitchen setup — prep ingredients night before'},
   {day:'Wednesday',title:'Wellness Habits That Changed My Life',hook:'I did these 5 things every day for 30 days and...',format:'Talking head',status:'editing',notes:'Check trending sounds'},
   {day:'Thursday',title:'Rest Day — Stories & Engagement',hook:'',format:'Stories only',status:'planned',notes:'Q&A replies + behind the scenes'},
-  {day:'Friday',title:'Best Wellness Spots in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',status:'planned',notes:'Kite Beach + healthy cafe visit'},
-  {day:'Saturday',title:'Night Routine for Better Sleep',hook:"I haven't had a bad night's sleep since doing this",format:'Routine',status:'planned',notes:'Film tonight before bed'},
-  {day:'Sunday',title:'Weekly Reflection + Planning',hook:'',format:'Story series',status:'planned',notes:'Show your planning process — accountability'}
+  {day:'Friday',title:'Hidden Wellness Gems in Dubai',hook:'Dubai wellness spots no one talks about 🌆',format:'Location video',status:'planned',notes:'Kite Beach + healthy cafe visit'},
+  {day:'Saturday',title:'Sound Healing Experience',hook:'I tried sound healing for the first time and...',format:'Experience',status:'planned',notes:'Film at the studio if possible'},
+  {day:'Sunday',title:'Weekly Reflection + Planning',hook:'',format:'Stories only',status:'planned',notes:'Show your planning process — accountability'}
 ];
 var DEFAULT_CONT_HOOKS=[
-  {cat:'POV',hooks:['POV: My 5am morning in Dubai 🌅','POV: You start taking your health seriously','POV: Your wellness era just started','POV: I moved to Dubai and found my healthiest self']},
-  {cat:'Transformation',hooks:['I did this every day for 30 days and...','I tried [thing] so you don\'t have to','Before I found this I was really struggling with...','My life completely changed when I started...']},
-  {cat:'Education',hooks:['What no one tells you about...','The truth about [wellness topic]','Stop doing this if you want to...','This is actually why you\'re always tired']},
-  {cat:'Review',hooks:['I tested the viral [product] — honest review','Is [product/place] actually worth it?','Rating every wellness trend I\'ve tried','Honest review after [time period]']},
-  {cat:'Relatable',hooks:['When you\'re trying to be healthy but...','Nobody talks about the hard part of wellness','Real life wellness (not what Instagram shows)','The unglamorous side of a healthy lifestyle']},
-  {cat:'Dubai Life',hooks:['Best kept wellness secrets in Dubai','Dubai wellness that\'s actually worth it','How I stay healthy living in Dubai','The wellness side of Dubai no one shows you']},
-  {cat:'Routine',hooks:['My exact morning routine (the real one)','Come with me: healthy day in Dubai','Everything I do to maintain my energy','My non-negotiable daily habits']}
+  {cat:'POV',hooks:['POV: My morning in Dubai 🌅','POV: You start taking your health seriously','POV: Your wellness era just started','POV: I moved to Dubai and found my healthiest self']},
+  {cat:'Transformation',hooks:["I did this every day for 30 days and...","I tried [thing] so you don't have to","Before I found this I was really struggling with...","My life completely changed when I started..."]},
+  {cat:'Cycle Syncing',hooks:['I started eating for my cycle and everything changed','What your cycle is actually trying to tell you','This is why you feel different every week','Syncing your workout to your cycle looks like this']},
+  {cat:'Nutrition',hooks:['What I eat to reduce inflammation','My anti-inflammatory meal prep every Sunday','The foods I cut and how I feel now','Eating this way changed my energy completely']},
+  {cat:'Wellness Experiences',hooks:["I tried [wellness experience] so you don't have to","Is [experience] worth it in Dubai?","My honest take after trying [wellness thing]","This wellness trend completely changed my mind"]},
+  {cat:'Relatable',hooks:["Nobody talks about the hard part of wellness","Real life wellness (not what Instagram shows)","The unglamorous side of a healthy lifestyle","When you're trying to be healthy but..."]},
+  {cat:'Dubai Life',hooks:["Best kept wellness secrets in Dubai","Dubai wellness that's actually worth it","How I stay healthy living in Dubai","The wellness side of Dubai no one shows you"]}
 ];
 var DEFAULT_CONT_STRAT=[
-  {pillar:'Morning Routines',emoji:'🌅',goal:'Be the go-to creator for morning wellness routines',emotion:'Inspiring & aspirational',cta:'Save this for tomorrow morning',freq:'2× per week',bestTime:'6–8am post'},
-  {pillar:'Dubai Wellness',emoji:'🌆',goal:'Own the Dubai wellness niche on TikTok',emotion:'Exclusive lifestyle',cta:'Follow for more Dubai wellness',freq:'1× per week',bestTime:'12pm post'},
+  {pillar:'Dubai Life',emoji:'🌆',goal:'Own the Dubai wellness niche on TikTok',emotion:'Exclusive & aspirational',cta:'Follow for more Dubai wellness',freq:'1× per week',bestTime:'12pm post'},
+  {pillar:'Cycle Syncing',emoji:'🌙',goal:'Be the go-to creator for cycle syncing education',emotion:'Empowering & informative',cta:'Save this — come back each phase',freq:'1–2× per week',bestTime:'7–9pm post'},
+  {pillar:'Nutrition',emoji:'🥗',goal:'Show realistic, anti-inflammatory eating',emotion:'Inspiring but achievable',cta:'Save for your next meal prep',freq:'1× per week',bestTime:'11am–1pm post'},
+  {pillar:'Wellness Experiences',emoji:'✨',goal:'Be an honest reviewer of wellness experiences',emotion:'Curious & authentic',cta:"Comment if you've tried this",freq:'1× per week',bestTime:'12–3pm post'},
+  {pillar:'Wellness Tips',emoji:'💚',goal:'Share practical, evidence-backed wellness habits',emotion:'Educational & trustworthy',cta:'Save this for your health journey',freq:'1× per week',bestTime:'6–8am post'},
   {pillar:'Mental Health',emoji:'🧠',goal:'Normalise mental health conversations',emotion:'Vulnerable & real',cta:'Share if this resonates ❤️',freq:'1× per week',bestTime:'7–9pm post'},
-  {pillar:'Fitness & Movement',emoji:'💪',goal:'Show balanced, sustainable fitness',emotion:'Motivating but realistic',cta:'Try this with me this week',freq:'1× per week',bestTime:'6–8am post'},
-  {pillar:'Wellness Reviews',emoji:'⭐',goal:'Become a trusted, honest wellness reviewer',emotion:'Informative & trustworthy',cta:'Save for your next purchase',freq:'1× per week',bestTime:'12–3pm post'},
-  {pillar:'GRWM & Lifestyle',emoji:'✨',goal:'Show the full wellness lifestyle',emotion:'Fun & relatable',cta:'Come back tomorrow for more',freq:'1× per week',bestTime:'5–7pm post'}
+  {pillar:'Fitness',emoji:'💪',goal:'Show balanced, sustainable fitness',emotion:'Motivating but realistic',cta:'Try this with me this week',freq:'1× per week',bestTime:'6–8am post'}
 ];
 
 function getContIdeas(){return T.contentIdeas&&T.contentIdeas.length?T.contentIdeas:DEFAULT_CONT_IDEAS;}
-function getContPipeline(){return T.contentPipeline&&Object.keys(T.contentPipeline).length?T.contentPipeline:DEFAULT_CONT_PIPE;}
+function getContPipeline(){var p=T.contentPipeline;return p&&Object.keys(p).length?p:DEFAULT_CONT_PIPE;}
 function getContWeek(){return T.contentWeek&&T.contentWeek.length?T.contentWeek:DEFAULT_CONT_WEEK;}
 function getContHooks(){return T.contentHooks&&T.contentHooks.length?T.contentHooks:DEFAULT_CONT_HOOKS;}
 function getContStrat(){return T.contentStrategy&&T.contentStrategy.length?T.contentStrategy:DEFAULT_CONT_STRAT;}
@@ -2322,39 +2325,35 @@ window.showCont=function(panel,btn){
   document.getElementById('cont-'+panel).classList.add('active');
   btn.classList.add('active');
 };
-
 window.filterIdeas=function(cat,btn){
   T.activeIdeaFilter=cat;
   document.getElementById('idea-filter-tabs').querySelectorAll('.cont-tab').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
   renderContentIdeas();
 };
-
 window.copyHook=function(text,btn){
   if(navigator.clipboard){navigator.clipboard.writeText(text);}
   btn.textContent='✓ Copied!';btn.style.borderColor='#c026d3';btn.style.color='#c026d3';
   setTimeout(function(){btn.textContent='Copy';btn.style.borderColor='';btn.style.color='';},2000);
 };
 
+// ── SHARED OPTION HELPERS ───────────────────────
+function _catOpts(sel){return CONT_CATS.map(function(c){return '<option'+(c===sel?' selected':'')+'>'+c+'</option>';}).join('');}
+function _fmtOpts(sel){return CONT_FMTS.map(function(f){return '<option'+(f===sel?' selected':'')+'>'+f+'</option>';}).join('');}
+function _priOpts(sel){return [['high','🔴 High'],['medium','🟡 Medium'],['low','🟢 Low']].map(function(p){return '<option value=”'+p[0]+'”'+(p[0]===sel?' selected':'')+'>'+p[1]+'</option>';}).join('');}
+function _editBtn(fn){return '<button onclick=”'+fn+'” style=”font-size:.6rem;padding:2px 7px;border-radius:var(--rp);border:1px solid var(--border);background:#fff;cursor:pointer;color:var(--muted);flex-shrink:0;transition:all .12s” onmouseover=”this.style.borderColor=\'#c026d3\';this.style.color=\'#c026d3\'” onmouseout=”this.style.borderColor=\'\';this.style.color=\'\'”>✎</button>';}
+function _delBtn(fn){return '<button onclick=”'+fn+'” style=”font-size:.6rem;padding:2px 7px;border-radius:var(--rp);border:1px solid var(--rl);background:var(--rl);cursor:pointer;color:var(--red);flex-shrink:0”>✕</button>';}
+function _addDashBtn(fn,label){return '<button onclick=”'+fn+'” style=”width:100%;padding:8px;border-radius:var(--r);border:1.5px dashed var(--border);background:transparent;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:8px;font-family:Inter,sans-serif;transition:all .15s” onmouseover=”this.style.borderColor=\'#c026d3\';this.style.color=\'#c026d3\'” onmouseout=”this.style.borderColor=\'\';this.style.color=\'\'”>'+(label||'+ Add')+'</button>';}
+
+// ── IDEAS CRUD ──────────────────────────────────
 window.addContentIdea=function(){
-  openModal('Add Video Idea',
-    '<input class="modal-inp" id="m-ci-title" placeholder="Video title / concept">'+
-    '<input class="modal-inp" id="m-ci-hook" placeholder="Hook (your opening line)...">'+
-    '<select class="modal-inp" id="m-ci-cat">'+
-      '<option>Morning Routine</option><option>Dubai Life</option><option>Wellness Tips</option>'+
-      '<option>Mental Health</option><option>Fitness</option><option>GRWM</option><option>Reviews</option>'+
-    '</select>'+
-    '<select class="modal-inp" id="m-ci-fmt">'+
-      '<option>Talking head</option><option>GRWM</option><option>Routine walkthrough</option>'+
-      '<option>Educational</option><option>Day in my life</option><option>Location video</option>'+
-      '<option>Before/after</option><option>Product review</option><option>Stories only</option>'+
-    '</select>'+
-    '<select class="modal-inp" id="m-ci-pri">'+
-      '<option value="high">🔴 High Priority</option>'+
-      '<option value="medium" selected>🟡 Medium Priority</option>'+
-      '<option value="low">🟢 Low Priority</option>'+
-    '</select>'+
-    '<input class="modal-inp" id="m-ci-notes" placeholder="Filming notes, reminders...">',
+  openModal('💡 Add Video Idea',
+    '<input class=”modal-inp” id=”m-ci-title” placeholder=”Video title / concept”>'+
+    '<input class=”modal-inp” id=”m-ci-hook” placeholder=”Hook (your opening line)...”>'+
+    '<select class=”modal-inp” id=”m-ci-cat”>'+_catOpts('')+'</select>'+
+    '<select class=”modal-inp” id=”m-ci-fmt”>'+_fmtOpts('')+'</select>'+
+    '<select class=”modal-inp” id=”m-ci-pri”>'+_priOpts('medium')+'</select>'+
+    '<input class=”modal-inp” id=”m-ci-notes” placeholder=”Filming notes, reminders...”>',
     function(){
       var title=document.getElementById('m-ci-title').value.trim();if(!title)return;
       var ideas=getContIdeas().slice();
@@ -2365,23 +2364,45 @@ window.addContentIdea=function(){
     }
   );
 };
+window.editContentIdea=function(id){
+  var ideas=getContIdeas().slice();
+  var idx=-1;for(var j=0;j<ideas.length;j++){if(ideas[j].id===id){idx=j;break;}}
+  if(idx<0)return;var idea=ideas[idx];
+  openModal('✎ Edit Idea',
+    '<input class=”modal-inp” id=”m-ei-title” placeholder=”Title”>'+
+    '<input class=”modal-inp” id=”m-ei-hook” placeholder=”Hook”>'+
+    '<select class=”modal-inp” id=”m-ei-cat”>'+_catOpts(idea.cat)+'</select>'+
+    '<select class=”modal-inp” id=”m-ei-fmt”>'+_fmtOpts(idea.format)+'</select>'+
+    '<select class=”modal-inp” id=”m-ei-pri”>'+_priOpts(idea.priority)+'</select>'+
+    '<input class=”modal-inp” id=”m-ei-notes” placeholder=”Notes”>',
+    function(){
+      var title=document.getElementById('m-ei-title').value.trim();if(!title)return;
+      ideas[idx].title=title;ideas[idx].hook=document.getElementById('m-ei-hook').value.trim();
+      ideas[idx].cat=document.getElementById('m-ei-cat').value;ideas[idx].format=document.getElementById('m-ei-fmt').value;
+      ideas[idx].priority=document.getElementById('m-ei-pri').value;ideas[idx].notes=document.getElementById('m-ei-notes').value.trim();
+      T.contentIdeas=ideas;save('v2_cont_ideas',T.contentIdeas);renderContentIdeas();
+    }
+  );
+  setTimeout(function(){
+    var t=document.getElementById('m-ei-title');if(t)t.value=idea.title||'';
+    var h=document.getElementById('m-ei-hook');if(h)h.value=idea.hook||'';
+    var n=document.getElementById('m-ei-notes');if(n)n.value=idea.notes||'';
+  },30);
+};
+window.deleteContentIdea=function(id){
+  if(!confirm('Delete this idea?'))return;
+  T.contentIdeas=getContIdeas().filter(function(i){return i.id!==id;});
+  save('v2_cont_ideas',T.contentIdeas);renderContentIdeas();
+};
 
-window.addPipelineItem=function(){
-  openModal('Add to Pipeline',
-    '<input class="modal-inp" id="m-pi-title" placeholder="Video title">'+
-    '<input class="modal-inp" id="m-pi-hook" placeholder="Hook (opening line)...">'+
-    '<select class="modal-inp" id="m-pi-stage">'+
-      '<option value="ideas">💡 Ideas</option>'+
-      '<option value="scripting">📝 Scripting</option>'+
-      '<option value="filming">🎬 Filming</option>'+
-      '<option value="editing">✂️ Editing</option>'+
-      '<option value="posted">✅ Posted</option>'+
-    '</select>'+
-    '<select class="modal-inp" id="m-pi-cat">'+
-      '<option>Morning Routine</option><option>Dubai Life</option><option>Wellness Tips</option>'+
-      '<option>Mental Health</option><option>Fitness</option><option>GRWM</option><option>Reviews</option>'+
-    '</select>'+
-    '<input class="modal-inp" id="m-pi-notes" placeholder="Notes...">',
+// ── PIPELINE CRUD ───────────────────────────────
+window.addPipelineItem=function(preStage){
+  openModal('🎬 Add to Pipeline',
+    '<input class=”modal-inp” id=”m-pi-title” placeholder=”Video title”>'+
+    '<input class=”modal-inp” id=”m-pi-hook” placeholder=”Hook (opening line)...”>'+
+    '<select class=”modal-inp” id=”m-pi-stage”><option value=”ideas”>💡 Ideas</option><option value=”scripting”>📝 Scripting</option><option value=”filming”>🎬 Filming</option><option value=”editing”>✂️ Editing</option><option value=”posted”>✅ Posted</option></select>'+
+    '<select class=”modal-inp” id=”m-pi-cat”>'+_catOpts('')+'</select>'+
+    '<input class=”modal-inp” id=”m-pi-notes” placeholder=”Notes...”>',
     function(){
       var title=document.getElementById('m-pi-title').value.trim();if(!title)return;
       var pipe=JSON.parse(JSON.stringify(getContPipeline()));
@@ -2392,8 +2413,37 @@ window.addPipelineItem=function(){
       T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
     }
   );
+  if(preStage){setTimeout(function(){var s=document.getElementById('m-pi-stage');if(s)s.value=preStage;},30);}
 };
-
+window.editPipeCard=function(id,stage){
+  var pipe=JSON.parse(JSON.stringify(getContPipeline()));
+  var arr=pipe[stage]||[];var idx=-1;
+  for(var j=0;j<arr.length;j++){if(arr[j].id===id){idx=j;break;}}
+  if(idx<0)return;var card=arr[idx];
+  openModal('✎ Edit Card',
+    '<input class=”modal-inp” id=”m-epc-title” placeholder=”Title”>'+
+    '<input class=”modal-inp” id=”m-epc-hook” placeholder=”Hook”>'+
+    '<select class=”modal-inp” id=”m-epc-cat”>'+_catOpts(card.cat)+'</select>'+
+    '<input class=”modal-inp” id=”m-epc-notes” placeholder=”Notes”>',
+    function(){
+      var title=document.getElementById('m-epc-title').value.trim();if(!title)return;
+      pipe[stage][idx].title=title;pipe[stage][idx].hook=document.getElementById('m-epc-hook').value.trim();
+      pipe[stage][idx].cat=document.getElementById('m-epc-cat').value;pipe[stage][idx].notes=document.getElementById('m-epc-notes').value.trim();
+      T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
+    }
+  );
+  setTimeout(function(){
+    var t=document.getElementById('m-epc-title');if(t)t.value=card.title||'';
+    var h=document.getElementById('m-epc-hook');if(h)h.value=card.hook||'';
+    var n=document.getElementById('m-epc-notes');if(n)n.value=card.notes||'';
+  },30);
+};
+window.deletePipeCard=function(id,stage){
+  if(!confirm('Delete this card?'))return;
+  var pipe=JSON.parse(JSON.stringify(getContPipeline()));
+  pipe[stage]=(pipe[stage]||[]).filter(function(c){return c.id!==id;});
+  T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
+};
 window.movePipeCard=function(id,fromStage,toStage){
   var pipe=JSON.parse(JSON.stringify(getContPipeline()));
   var card=null;
@@ -2404,10 +2454,136 @@ window.movePipeCard=function(id,fromStage,toStage){
   T.contentPipeline=pipe;save('v2_cont_pipe',T.contentPipeline);renderContentPipeline();
 };
 
+// ── WEEK PLAN CRUD ──────────────────────────────
+window.addWeekDay=function(){
+  openModal('📅 Add to Week Plan',
+    '<select class=”modal-inp” id=”m-aw-day”>'+CONT_DAYS.map(function(d){return '<option>'+d+'</option>';}).join('')+'</select>'+
+    '<input class=”modal-inp” id=”m-aw-title” placeholder=”Video title / activity”>'+
+    '<input class=”modal-inp” id=”m-aw-hook” placeholder=”Hook (opening line)...”>'+
+    '<select class=”modal-inp” id=”m-aw-fmt”>'+_fmtOpts('')+'</select>'+
+    '<select class=”modal-inp” id=”m-aw-status”><option value=”planned”>📋 Planned</option><option value=”filming”>🎬 Filming</option><option value=”editing”>✂️ Editing</option><option value=”posted”>✅ Posted</option></select>'+
+    '<input class=”modal-inp” id=”m-aw-notes” placeholder=”Notes...”>',
+    function(){
+      var title=document.getElementById('m-aw-title').value.trim();if(!title)return;
+      var week=getContWeek().slice();
+      week.push({day:document.getElementById('m-aw-day').value,title:title,
+        hook:document.getElementById('m-aw-hook').value.trim(),format:document.getElementById('m-aw-fmt').value,
+        status:document.getElementById('m-aw-status').value,notes:document.getElementById('m-aw-notes').value.trim()});
+      T.contentWeek=week;save('v2_cont_week',T.contentWeek);renderContentWeek();
+    }
+  );
+};
+window.editWeekDay=function(idx){
+  var week=getContWeek().slice();var d=week[idx];if(!d)return;
+  openModal('✎ Edit Day',
+    '<select class=”modal-inp” id=”m-ew-day”>'+CONT_DAYS.map(function(dy){return '<option'+(dy===d.day?' selected':'')+'>'+dy+'</option>';}).join('')+'</select>'+
+    '<input class=”modal-inp” id=”m-ew-title” placeholder=”Title”>'+
+    '<input class=”modal-inp” id=”m-ew-hook” placeholder=”Hook”>'+
+    '<select class=”modal-inp” id=”m-ew-fmt”>'+_fmtOpts(d.format)+'</select>'+
+    '<select class=”modal-inp” id=”m-ew-status”><option value=”planned”'+(d.status===”planned”?” selected”:””)+'>📋 Planned</option><option value=”filming”'+(d.status===”filming”?” selected”:””)+'>🎬 Filming</option><option value=”editing”'+(d.status===”editing”?” selected”:””)+'>✂️ Editing</option><option value=”posted”'+(d.status===”posted”?” selected”:””)+'>✅ Posted</option></select>'+
+    '<input class=”modal-inp” id=”m-ew-notes” placeholder=”Notes”>',
+    function(){
+      var title=document.getElementById('m-ew-title').value.trim();if(!title)return;
+      week[idx]={day:document.getElementById('m-ew-day').value,title:title,
+        hook:document.getElementById('m-ew-hook').value.trim(),format:document.getElementById('m-ew-fmt').value,
+        status:document.getElementById('m-ew-status').value,notes:document.getElementById('m-ew-notes').value.trim()};
+      T.contentWeek=week;save('v2_cont_week',T.contentWeek);renderContentWeek();
+    }
+  );
+  setTimeout(function(){
+    var t=document.getElementById('m-ew-title');if(t)t.value=d.title||'';
+    var h=document.getElementById('m-ew-hook');if(h)h.value=d.hook||'';
+    var n=document.getElementById('m-ew-notes');if(n)n.value=d.notes||'';
+  },30);
+};
+window.deleteWeekDay=function(idx){
+  if(!confirm('Remove this day from the plan?'))return;
+  var week=getContWeek().slice();week.splice(idx,1);
+  T.contentWeek=week;save('v2_cont_week',T.contentWeek);renderContentWeek();
+};
 window.updateWeekStatus=function(idx,status){
   var week=JSON.parse(JSON.stringify(getContWeek()));
   week[idx].status=status;
   T.contentWeek=week;save('v2_cont_week',T.contentWeek);renderContentWeek();
+};
+
+// ── HOOKS CRUD ──────────────────────────────────
+window.addHookGroup=function(){
+  var name=prompt('New hook category name:');if(!name||!name.trim())return;
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));
+  hooks.push({cat:name.trim(),hooks:[]});
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+window.editHookGroup=function(gi){
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));
+  var name=prompt('Rename category:',hooks[gi]?hooks[gi].cat:'');
+  if(!name||!name.trim())return;
+  hooks[gi].cat=name.trim();
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+window.deleteHookGroup=function(gi){
+  if(!confirm('Delete this hook group and all its hooks?'))return;
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));hooks.splice(gi,1);
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+window.addHookToGroup=function(gi){
+  var text=prompt('New hook text:');if(!text||!text.trim())return;
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));
+  if(!hooks[gi])return;
+  hooks[gi].hooks.push(text.trim());
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+window.editHook=function(gi,hi){
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));
+  var cur=(hooks[gi]&&hooks[gi].hooks[hi])||'';
+  var text=prompt('Edit hook:',cur);if(text===null)return;
+  if(text.trim())hooks[gi].hooks[hi]=text.trim();
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+window.deleteHook=function(gi,hi){
+  if(!confirm('Delete this hook?'))return;
+  var hooks=JSON.parse(JSON.stringify(getContHooks()));hooks[gi].hooks.splice(hi,1);
+  T.contentHooks=hooks;save('v2_cont_hooks',T.contentHooks);renderContentHooks();
+};
+
+// ── STRATEGY CRUD ───────────────────────────────
+function _stratFields(s){s=s||{};
+  return '<input class=”modal-inp” id=”m-sp-pillar” placeholder=”Pillar name” value=”'+(s.pillar||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-emoji” placeholder=”Emoji (e.g. 🌙)” value=”'+(s.emoji||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-goal” placeholder=”Goal for this pillar” value=”'+(s.goal||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-emotion” placeholder=”Tone / emotion” value=”'+(s.emotion||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-cta” placeholder=”Call to action” value=”'+(s.cta||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-freq” placeholder=”Frequency (e.g. 1× per week)” value=”'+(s.freq||'')+'”>'+
+    '<input class=”modal-inp” id=”m-sp-time” placeholder=”Best time to post” value=”'+(s.bestTime||'')+'”>';
+}
+function _readStrat(){
+  return {pillar:(document.getElementById('m-sp-pillar').value||'').trim(),
+    emoji:(document.getElementById('m-sp-emoji').value||'✨').trim(),
+    goal:(document.getElementById('m-sp-goal').value||'').trim(),
+    emotion:(document.getElementById('m-sp-emotion').value||'').trim(),
+    cta:(document.getElementById('m-sp-cta').value||'').trim(),
+    freq:(document.getElementById('m-sp-freq').value||'').trim(),
+    bestTime:(document.getElementById('m-sp-time').value||'').trim()};
+}
+window.addStratPillar=function(){
+  openModal('📊 Add Content Pillar',_stratFields(),function(){
+    var d=_readStrat();if(!d.pillar)return;
+    var strat=getContStrat().slice();strat.push(d);
+    T.contentStrategy=strat;save('v2_cont_strat',T.contentStrategy);renderContentStrategy();
+  });
+};
+window.editStratPillar=function(idx){
+  var strat=getContStrat().slice();var s=strat[idx];if(!s)return;
+  openModal('✎ Edit Pillar',_stratFields(s),function(){
+    var d=_readStrat();if(!d.pillar)return;
+    strat[idx]=d;
+    T.contentStrategy=strat;save('v2_cont_strat',T.contentStrategy);renderContentStrategy();
+  });
+};
+window.deleteStratPillar=function(idx){
+  if(!confirm('Delete this pillar?'))return;
+  var strat=getContStrat().slice();strat.splice(idx,1);
+  T.contentStrategy=strat;save('v2_cont_strat',T.contentStrategy);renderContentStrategy();
 };
 
 var PIPE_STAGES=[
@@ -2418,6 +2594,7 @@ var PIPE_STAGES=[
   {key:'posted',label:'✅ Posted',bg:'var(--gl)',fg:'var(--green)'}
 ];
 
+// ── RENDER: WEEK PLAN ───────────────────────────
 function renderContentWeek(){
   var el=document.getElementById('cont-week-grid');if(!el)return;
   var week=getContWeek();
@@ -2425,73 +2602,90 @@ function renderContentWeek(){
   var stageOpts=['planned','filming','editing','posted'];
   var html='';
   week.forEach(function(d,i){
-    html+='<div class="cont-day-card status-'+d.status+'">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
-        '<div style="flex:1">'+
-          '<div class="cont-day-name">'+d.day+'</div>'+
-          '<div class="cont-day-title">'+d.title+'</div>'+
-          (d.hook?'<div class="cont-day-hook">“'+d.hook+'”</div>':'')+
-          (d.format?'<span class="ctik">'+d.format+'</span>':'')+
-          (d.notes?'<div style="font-size:.7rem;color:var(--muted);margin-top:5px">📌 '+d.notes+'</div>':'')+
+    html+='<div class=”cont-day-card status-'+d.status+'”>'+
+      '<div style=”display:flex;align-items:flex-start;justify-content:space-between;gap:8px”>'+
+        '<div style=”flex:1;min-width:0”>'+
+          '<div class=”cont-day-name”>'+d.day+'</div>'+
+          '<div class=”cont-day-title”>'+d.title+'</div>'+
+          (d.hook?'<div class=”cont-day-hook”>”'+d.hook+'”</div>':'')+
+          (d.format?'<span class=”ctik”>'+d.format+'</span>':'')+
+          (d.notes?'<div style=”font-size:.7rem;color:var(--muted);margin-top:5px”>📌 '+d.notes+'</div>':'')+
         '</div>'+
-        '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0">'+
-          '<span style="font-size:.65rem;font-weight:600;padding:2px 9px;border-radius:100px;white-space:nowrap" class="cstatus-'+d.status+'">'+stageLabel[d.status]+'</span>'+
-          '<select style="font-size:.63rem;border:1px solid var(--border);border-radius:var(--rp);padding:2px 5px;color:var(--muted);cursor:pointer;background:#fff" onchange="updateWeekStatus('+i+',this.value)">'+
-          stageOpts.map(function(s){return '<option value="'+s+'"'+(d.status===s?' selected':'')+'>'+stageLabel[s]+'</option>';}).join('')+
+        '<div style=”display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0”>'+
+          '<span class=”cstatus-'+d.status+'” style=”font-size:.65rem;font-weight:600;padding:2px 9px;border-radius:100px;white-space:nowrap”>'+stageLabel[d.status]+'</span>'+
+          '<select style=”font-size:.63rem;border:1px solid var(--border);border-radius:var(--rp);padding:2px 5px;color:var(--muted);cursor:pointer;background:#fff;font-family:Inter,sans-serif” onchange=”updateWeekStatus('+i+',this.value)”>'+
+            stageOpts.map(function(s){return '<option value=”'+s+'”'+(d.status===s?' selected':'')+'>'+stageLabel[s]+'</option>';}).join('')+
           '</select>'+
+          '<div style=”display:flex;gap:3px”>'+_editBtn('editWeekDay('+i+')')+_delBtn('deleteWeekDay('+i+')')+'</div>'+
         '</div>'+
       '</div>'+
     '</div>';
   });
-  el.innerHTML=html||'<div class="empty">No week plan yet.</div>';
+  html+=_addDashBtn('addWeekDay()','+ Add Day');
+  el.innerHTML=html;
 }
 
+// ── RENDER: PIPELINE ────────────────────────────
 function renderContentPipeline(){
   var el=document.getElementById('cont-pipe-grid');if(!el)return;
   var pipe=getContPipeline();
   var nextStage={ideas:'scripting',scripting:'filming',filming:'editing',editing:'posted'};
   var html='';
   PIPE_STAGES.forEach(function(stage){
-    var cards=pipe[stage.key]||[];
+    var cards=pipe[stage.key]||[];var sk=stage.key;
     html+='<div>'+
-      '<div class="pipe-col-hd" style="background:'+stage.bg+';color:'+stage.fg+'">'+
-        stage.label+' <span style="font-size:.65rem;font-weight:400;opacity:.8">('+cards.length+')</span>'+
+      '<div class=”pipe-col-hd” style=”background:'+stage.bg+';color:'+stage.fg+'”>'+
+        stage.label+' <span style=”font-size:.65rem;font-weight:400;opacity:.8”>('+cards.length+')</span>'+
       '</div>';
     cards.forEach(function(c){
-      html+='<div class="pipe-card">'+
-        '<div class="pipe-card-title">'+c.title+'</div>'+
-        (c.hook?'<div style="font-size:.7rem;color:#c026d3;font-style:italic;margin-bottom:5px;line-height:1.3">“'+c.hook+'”</div>':'')+
-        '<div class="pipe-card-meta">'+
-          '<span class="ctik">'+c.cat+'</span>'+
-          (nextStage[stage.key]?
-            '<button onclick="movePipeCard('+c.id+',\''+stage.key+'\',\''+nextStage[stage.key]+'\')" style="font-size:.6rem;padding:2px 8px;border-radius:100px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;margin-left:auto;transition:all .15s" onmouseover="this.style.borderColor=\'#c026d3\';this.style.color=\'#c026d3\'" onmouseout="this.style.borderColor=\'\';this.style.color=\'\'">→ Next</button>':
-            '<span style="font-size:.63rem;color:var(--green);margin-left:auto;font-weight:600">Live ✓</span>')+
+      html+='<div class=”pipe-card”>'+
+        '<div style=”display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:4px”>'+
+          '<div class=”pipe-card-title” style=”flex:1”>'+c.title+'</div>'+
+          '<div style=”display:flex;gap:2px”>'+_editBtn('editPipeCard('+c.id+',\''+sk+'\')')+_delBtn('deletePipeCard('+c.id+',\''+sk+'\')')+'</div>'+
         '</div>'+
-        (c.notes?'<div style="font-size:.67rem;color:var(--muted);margin-top:4px">'+c.notes+'</div>':'')+
+        (c.hook?'<div style=”font-size:.7rem;color:#c026d3;font-style:italic;margin-bottom:5px;line-height:1.3”>”'+c.hook+'”</div>':'')+
+        '<div class=”pipe-card-meta”>'+
+          '<span class=”ctik”>'+c.cat+'</span>'+
+          (nextStage[sk]?
+            '<button onclick=”movePipeCard('+c.id+',\''+sk+'\',\''+nextStage[sk]+'\')” style=”font-size:.6rem;padding:2px 8px;border-radius:100px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;margin-left:auto;transition:all .15s” onmouseover=”this.style.borderColor=\'#c026d3\';this.style.color=\'#c026d3\'” onmouseout=”this.style.borderColor=\'\';this.style.color=\'\'”>→ Next</button>':
+            '<span style=”font-size:.63rem;color:var(--green);margin-left:auto;font-weight:600”>Live ✓</span>')+
+        '</div>'+
+        (c.notes?'<div style=”font-size:.67rem;color:var(--muted);margin-top:4px”>'+c.notes+'</div>':'')+
       '</div>';
     });
-    if(!cards.length)html+='<div style="font-size:.75rem;color:var(--muted);font-style:italic;text-align:center;padding:14px 0;border:1.5px dashed var(--border);border-radius:var(--r)">Empty</div>';
+    if(!cards.length)html+='<div style=”font-size:.75rem;color:var(--muted);font-style:italic;text-align:center;padding:14px 0;border:1.5px dashed var(--border);border-radius:var(--r)”>Empty</div>';
+    html+=_addDashBtn('addPipelineItem(\''+sk+'\')','+ Add');
     html+='</div>';
   });
   el.innerHTML=html;
 }
 
+// ── RENDER: IDEAS BANK ──────────────────────────
 function renderContentIdeas(){
+  var ft=document.getElementById('idea-filter-tabs');
   var el=document.getElementById('cont-ideas-list');if(!el)return;
-  var ideas=getContIdeas();
   var filter=T.activeIdeaFilter||'All';
+  if(ft){
+    ft.innerHTML=['All'].concat(CONT_CATS).map(function(c){
+      return '<button class=”cont-tab'+(c===filter?' active':'')+'” onclick=”filterIdeas(\''+c+'\',this)”>'+c+'</button>';
+    }).join('');
+  }
+  var ideas=getContIdeas();
   var filtered=filter==='All'?ideas:ideas.filter(function(i){return i.cat===filter;});
-  if(!filtered.length){el.innerHTML='<div class="empty">No ideas in this category yet. Click + Idea to add one.</div>';return;}
-  var html='<div class="g3">';
+  if(!filtered.length){el.innerHTML='<div class=”empty”>No ideas in this category yet. Click + Idea to add one.</div>';return;}
+  var html='<div class=”g3”>';
   filtered.forEach(function(idea){
-    html+='<div class="idea-card">'+
-      '<div class="idea-card-title">'+idea.title+'</div>'+
-      (idea.hook?'<div class="idea-card-hook">“'+idea.hook+'”</div>':'')+
-      '<div style="font-size:.7rem;color:var(--muted);margin-bottom:5px">'+idea.format+'</div>'+
-      (idea.notes?'<div style="font-size:.7rem;color:var(--muted);line-height:1.5;margin-bottom:6px">📌 '+idea.notes+'</div>':'')+
-      '<div class="idea-card-meta">'+
-        '<span class="ctik">'+idea.cat+'</span>'+
-        '<span class="cpri-'+idea.priority+'" style="font-size:.6rem;font-weight:600;padding:2px 7px;border-radius:100px">'+idea.priority+'</span>'+
+    html+='<div class=”idea-card”>'+
+      '<div style=”display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:3px”>'+
+        '<div class=”idea-card-title” style=”flex:1”>'+idea.title+'</div>'+
+        '<div style=”display:flex;gap:2px”>'+_editBtn('editContentIdea('+idea.id+')')+_delBtn('deleteContentIdea('+idea.id+')')+'</div>'+
+      '</div>'+
+      (idea.hook?'<div class=”idea-card-hook”>”'+idea.hook+'”</div>':'')+
+      '<div style=”font-size:.7rem;color:var(--muted);margin-bottom:5px”>'+idea.format+'</div>'+
+      (idea.notes?'<div style=”font-size:.7rem;color:var(--muted);line-height:1.5;margin-bottom:6px”>📌 '+idea.notes+'</div>':'')+
+      '<div class=”idea-card-meta”>'+
+        '<span class=”ctik”>'+idea.cat+'</span>'+
+        '<span class=”cpri-'+idea.priority+'” style=”font-size:.6rem;font-weight:600;padding:2px 7px;border-radius:100px”>'+idea.priority+'</span>'+
       '</div>'+
     '</div>';
   });
@@ -2499,37 +2693,49 @@ function renderContentIdeas(){
   el.innerHTML=html;
 }
 
+// ── RENDER: HOOKS ───────────────────────────────
 function renderContentHooks(){
   var el=document.getElementById('cont-hooks-list');if(!el)return;
-  var hooks=getContHooks();
-  var html='';
-  hooks.forEach(function(group){
-    html+='<div class="hook-cat-hd">'+group.cat+'</div>';
-    group.hooks.forEach(function(h){
-      var safe=h.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-      html+='<div class="hook-card">'+
-        '<div class="hook-text">“'+h+'”</div>'+
-        '<button class="copy-hook-btn" onclick="copyHook(\''+safe+'\',this)">Copy</button>'+
+  var hooks=getContHooks();var html='';
+  hooks.forEach(function(group,gi){
+    html+='<div style=”display:flex;align-items:center;gap:6px;margin-bottom:6px'+(gi>0?';margin-top:16px':'')+'”>'+
+      '<div class=”hook-cat-hd” style=”margin:0;flex:1”>'+group.cat+'</div>'+
+      _editBtn('editHookGroup('+gi+')')+_delBtn('deleteHookGroup('+gi+')')+
+    '</div>';
+    group.hooks.forEach(function(h,hi){
+      var safe=h.replace(/\\/g,'\\\\').replace(/'/g,'&#39;');
+      html+='<div class=”hook-card”>'+
+        '<div class=”hook-text” style=”flex:1”>”'+h+'”</div>'+
+        '<div style=”display:flex;gap:4px;align-items:center;flex-shrink:0”>'+
+          '<button class=”copy-hook-btn” onclick=”copyHook(\''+safe+'\',this)”>Copy</button>'+
+          _editBtn('editHook('+gi+','+hi+')')+_delBtn('deleteHook('+gi+','+hi+')')+
+        '</div>'+
       '</div>';
     });
+    html+=_addDashBtn('addHookToGroup('+gi+')','+ Add Hook');
   });
-  el.innerHTML=html||'<div class="empty">No hooks yet.</div>';
+  html+=_addDashBtn('addHookGroup()','+ Add Hook Group');
+  el.innerHTML=html||'<div class=”empty”>No hooks yet.</div>';
 }
 
+// ── RENDER: STRATEGY ────────────────────────────
 function renderContentStrategy(){
   var el=document.getElementById('cont-strat-grid');if(!el)return;
-  var strat=getContStrat();
-  var html='';
-  strat.forEach(function(s){
-    html+='<div class="strat-card">'+
-      '<div class="strat-pillar"><span style="font-size:1.3rem">'+s.emoji+'</span>'+s.pillar+'</div>'+
-      '<div class="strat-row"><span class="strat-lbl">Goal</span><span class="strat-val">'+s.goal+'</span></div>'+
-      '<div class="strat-row"><span class="strat-lbl">Emotion / Tone</span><span class="strat-val">'+s.emotion+'</span></div>'+
-      '<div class="strat-row"><span class="strat-lbl">CTA</span><span class="strat-val" style="color:#c026d3;font-style:italic">'+s.cta+'</span></div>'+
-      '<div class="strat-row"><span class="strat-lbl">Frequency</span><span class="strat-val">'+s.freq+'</span></div>'+
-      '<div class="strat-row"><span class="strat-lbl">Best time to post</span><span class="strat-val">'+s.bestTime+'</span></div>'+
+  var strat=getContStrat();var html='';
+  strat.forEach(function(s,idx){
+    html+='<div class=”strat-card”>'+
+      '<div style=”display:flex;align-items:center;justify-content:space-between;margin-bottom:8px”>'+
+        '<div class=”strat-pillar” style=”margin:0”><span style=”font-size:1.3rem;margin-right:6px”>'+s.emoji+'</span>'+s.pillar+'</div>'+
+        '<div style=”display:flex;gap:3px”>'+_editBtn('editStratPillar('+idx+')')+_delBtn('deleteStratPillar('+idx+')')+'</div>'+
+      '</div>'+
+      '<div class=”strat-row”><span class=”strat-lbl”>Goal</span><span class=”strat-val”>'+s.goal+'</span></div>'+
+      '<div class=”strat-row”><span class=”strat-lbl”>Emotion / Tone</span><span class=”strat-val”>'+s.emotion+'</span></div>'+
+      '<div class=”strat-row”><span class=”strat-lbl”>CTA</span><span class=”strat-val” style=”color:#c026d3;font-style:italic”>'+s.cta+'</span></div>'+
+      '<div class=”strat-row”><span class=”strat-lbl”>Frequency</span><span class=”strat-val”>'+s.freq+'</span></div>'+
+      '<div class=”strat-row”><span class=”strat-lbl”>Best time to post</span><span class=”strat-val”>'+s.bestTime+'</span></div>'+
     '</div>';
   });
+  html+='<div style=”grid-column:1/-1”>'+_addDashBtn('addStratPillar()','+ Add Content Pillar')+'</div>';
   el.innerHTML=html;
 }
 
